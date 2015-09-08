@@ -1,0 +1,24 @@
+/* ------------------------------------------------------------ *\
+	Base
+\* ------------------------------------------------------------ */
+
+body { font-family: monospace; font-size: 10px; line-height: 1.45; color: #000; text-align: center; text-transform: lowercase; background: #fff; }
+
+ul,
+ol { list-style: none; padding: 0; margin: 0; }
+
+h1 { font-size: 5rem; margin: 2rem 0 3rem; }
+p { font-size: 2rem; margin: .5em 0 1em; }
+ol { font-size: 2rem; margin: 2em 0; }
+ol li:before { content: '- '; }
+ul { font-size: 15rem; margin: 1em 0; }
+
+.container { overflow: hidden; }
+
+@media ( min-width: 768px ) {
+	ul { font-size: 12rem; }
+}
+
+@media ( min-width: 991px ) {
+	ul { font-size: 18rem; }
+}
