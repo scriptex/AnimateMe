@@ -84,7 +84,7 @@
 <h2>Example setup:</h2>
 
 <pre>
-	$(document).ready(function() {\n
+	$(document).ready(function() {
 		$('.animated').animated({
 			animatedIn: 'animated-in',
 			offset: 0.8,
