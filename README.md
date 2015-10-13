@@ -84,12 +84,14 @@
 <h2>Example setup:</h2>
 
 <code>
-	$(document).ready(function() {
-		$('.animated').animated({
-			animatedIn: 'animated-in',
-			offset: 0.8,
-			reverse: false,
-			mobileDisabled: true
+	<pre>
+		$(document).ready(function() {\n
+			$('.animated').animated({
+				animatedIn: 'animated-in',
+				offset: 0.8,
+				reverse: false,
+				mobileDisabled: true
+			});
 		});
-	});
+	</pre>
 </code>
