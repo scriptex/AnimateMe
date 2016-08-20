@@ -1,215 +1,148 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
+<html>
 
-	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Animated : css and jquery animations on scroll">
 
-	<title>Animated.js</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <title>Animated</title>
+  </head>
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+  <body>
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/scriptex/animated">View on GitHub</a>
 
-	<link rel="stylesheet" href="vendor/animate.css" />
+          <h1 id="project_title">Animated</h1>
+          <h2 id="project_tagline">css and jquery animations on scroll</h2>
 
-	<link rel="stylesheet" href="css/animated.css" />
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/scriptex/animated/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/scriptex/animated/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-	<link rel="stylesheet" href="css/page.css" />
-</head>
-<body>
-	<div class="container">
-		<header class="header">
-			<h1>CSS and jQuery <br />animations on scroll.</h1>
-		</header><!-- /.header -->
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="css-and-jquery-animations-on-scroll" class="anchor" href="#css-and-jquery-animations-on-scroll" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CSS and jQuery <br>animations on scroll.</h1>
 
-		<section class="icons">
-			<ul class="row">
-				<li class="col-sm-3 animated" data-animation="fadeInUp">
-					<i class="fa fa-arrow-left"></i>
-				</li>
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
-				<li class="col-sm-3 animated" data-animation="fadeInUp">
-					<i class="fa fa-arrow-up"></i>
-				</li>
+<ol>
+    <li>Include <a href="https://daneden.github.io/animate.css/">animate.css</a> in your project.</li>
 
-				<li class="col-sm-3 animated" data-animation="fadeInUp">
-					<i class="fa fa-arrow-down"></i>
-				</li>
+    <li>Include animated.css in your project.</li>
+    
+    <li>Include <a href="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">jQuery</a> in your project.</li>
+    
+    <li>Include animated.min.js in your project.</li>
+    
+    <li>Add "animated" classname to the element that you want to animate</li>
 
-				<li class="col-sm-3 animated" data-animation="fadeInUp">
-					<i class="fa fa-arrow-right"></i>
-				</li>
-			</ul><!-- /.list-icons -->
-		</section><!-- /.icons -->
+    <li>Add the <a href="https://github.com/daneden/animate.css#readme">animation name</a> that you like as a "data-animation" attribute to the element: 
 
-		<section class="text">
-			<h2>How to use</h2>
+        <br>
 
-			<ol>
-				<li>Include <a href="https://daneden.github.io/animate.css/" target="_blank">animate.css</a> in your project.</li>
+        <br>
 
-				<li>Include animated.css in your project.</li>
-				
-				<li>Include <a href="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" target="_blank">jQuery</a> in your project.</li>
-				
-				<li>Include animated.js in your project.</li>
-				
-				<li>Add "animated" classname to the element that you want to animate</li>
+        <code>
+            &lt;li class="col-sm-3 animated" data-animation="rubberBand"&gt;&lt;/li&gt;
+        </code>
+    </li>
+</ol>
 
-				<li>Add the <a href="https://github.com/daneden/animate.css#readme" target="_blank">animation name</a> that you like as a "data-animation" attribute to the element: 
+<h2>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Options</h2>
 
-					<br />
+<ol>
+    <li>
+        <p>Set your own classname for the animated element when in viewport. Remember to update animated.css too!</p>
 
-					<br />
+        <code>
+            animatedIn: 'animated-in'
+        </code>
+    </li>
 
-					<code>
-						&lt;li class="col-sm-3 animated" data-animation="rubberBand"&gt;&lt;/li&gt;
-					</code>
-				</li>
-			</ol>
-		</section><!-- /.text -->
+    <li>
+        <p>Set the animation delay in pixels via "data-offset" attribute</p>
 
-		<section class="icons">
-			<ul class="row">
-				<li class="col-sm-3 animated" data-offset="60" data-animation="fadeInLeft">
-					<i class="fa fa-download"></i>
-				</li>
+        <code>
+            data-offset="120"
+        </code>
+    </li>
 
-				<li class="col-sm-3 animated" data-offset="120" data-animation="fadeInLeft">
-					<i class="fa fa-folder"></i>
-				</li>
+    <li>
+        <p>Choose to run the animations on mobile devices (tablets and phones)</p>
 
-				<li class="col-sm-3 animated" data-offset="180" data-animation="fadeInRight">
-					<i class="fa fa-database"></i>
-				</li>
+        <code>
+            mobileDisabled: true
+        </code>
+    </li>
 
-				<li class="col-sm-3 animated" data-offset="240" data-animation="fadeInRight">
-					<i class="fa fa-cog"></i>
-				</li>
-			</ul><!-- /.list-icons -->
-		</section><!-- /.icons -->
+    <li>
+        <p>Choose the start point of the animation relatively to the viewport.</p>
 
-		<section class="text">
-			<h2>Options</h2>
+        <code>
+            offset: 0.8
+        </code>
 
-			<ol>
-				<li>
-					<p>Set your own classname for the animated element when in viewport. Remember to update animated.css too!</p>
+        <p>0.8 means that the animation will start when the top of the element is at 80% from the top of the viewport</p>
 
-					<code>
-						animatedIn: 'animated-in'
-					</code>
-				</li>
+        <p>This number should be between 0 and 1.</p>
+    </li>
 
-				<li>
-					<p>Set the animation delay in pixels via "data-offset" attribute</p>
+    <li>
+        <p>Choose whether to run the animation again as you scroll up and then down</p>
 
-					<code>
-						data-offset="120"
-					</code>
-				</li>
+        <code>
+            reverse: false
+        </code>
+    </li>
+</ol>
 
-				<li>
-					<p>Choose to run the animations on mobile devices (tablets and phones)</p>
+<h2>
+<a id="supported-browsers" class="anchor" href="#supported-browsers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Supported Browsers</h2>
 
-					<code>
-						mobileDisabled: true
-					</code>
-				</li>
+<p>All browsers which know CSS transitions are supported.</p>
 
-				<li>
-					<p>Choose the start point of the animation relatively to the viewport.</p>
+<p>IE9 and below will simply ignore the transitions and show the content as is.</p>
 
-					<code>
-						offset: 0.8
-					</code>
+<p>Just remember to add all vendor prefixes, just in case :)</p>
 
-					<p>0.8 means that the animation will start when the top of the element is at 80% from the top of the viewport</p>
+<h2>
+<a id="example-setup" class="anchor" href="#example-setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example setup:</h2>
 
-					<p>This number should be between 0 and 1.</p>
-				</li>
+<pre>
+    $(document).ready(function() {
+        $('.animated').animated({
+            animatedIn: 'animated-in',
+            offset: 0.8,
+            reverse: false,
+            mobileDisabled: true
+        });
+    });
+</pre>
+      </section>
+    </div>
 
-				<li>
-					<p>Choose whether to run the animation again as you scroll up and then down</p>
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Animated maintained by <a href="https://github.com/scriptex">scriptex</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
 
-					<code>
-						reverse: false
-					</code>
-				</li>
-			</ol>
-		</section><!-- /.text -->
+    
 
-		<section class="icons">
-			<ul class="row">
-				<li class="col-sm-3 animated" data-offset="60" data-animation="fadeInDown">
-					<i class="fa fa-android"></i>
-				</li>
-
-				<li class="col-sm-3 animated" data-offset="120" data-animation="fadeInDown">
-					<i class="fa fa-apple"></i>
-				</li>
-
-				<li class="col-sm-3 animated" data-offset="180" data-animation="fadeInDown">
-					<i class="fa fa-css3"></i>
-				</li>
-
-				<li class="col-sm-3 animated" data-offset="240" data-animation="fadeInDown">
-					<i class="fa fa-html5"></i>
-				</li>
-			</ul><!-- /.list-icons -->
-		</section><!-- /.icons -->
-
-		<section class="text">
-			<h2>Supported Browsers</h2>
-
-			<p>All browsers which know CSS transitions are supported.</p>
-
-			<p>IE9 and below will simply ignore the transitions and show the content as is.</p>
-
-			<p>Just remember to add all vendor prefixes, just in case :)</p>
-		</section><!-- /.text -->
-
-		<section class="icons">
-			<ul class="row">
-				<li class="col-sm-3 animated" data-animation="bounceIn">
-					<i class="fa fa-chrome"></i>
-				</li>
-
-				<li class="col-sm-3 animated" data-animation="rollIn">
-					<i class="fa fa-firefox"></i>
-				</li>
-
-				<li class="col-sm-3 animated" data-animation="fadeIn">
-					<i class="fa fa-opera"></i>
-				</li>
-
-				<li class="col-sm-3 animated" data-animation="flipInY">
-					<i class="fa fa-safari"></i>
-				</li>
-			</ul><!-- /.list-icons -->
-		</section><!-- /.icons -->
-
-		<footer class="footer">
-			<p>&copy; 2015 2Create Studio.</p>
-		</footer><!-- /.footer -->
-	</div><!-- /.container -->
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
-	<script src="js/animated.min.js"></script>
-
-	<script>
-		$(document).ready(function() {
-			$('.animated').animated({
-				animatedIn: 'animated-in',
-				offset: 0.8,
-				reverse: false,
-				mobileDisabled: true
-			});
-		});
-	</script>
-</body>
+  </body>
 </html>
