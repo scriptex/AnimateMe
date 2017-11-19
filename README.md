@@ -59,12 +59,12 @@ Just remember to add all vendor prefixes, just in case :)
 ## Example setup:
 
 ```
-	new Animated('.animated', {
-	  offset: 0.5,
-	  reverse: true,
-	  animatedIn: 'animated-in',
-	  offsetAttr: 'data-offset',
-	  animationAttr: 'data-animation',
-	  mobileDisabled: true
-	})
+new Animated('.animated', {
+  offset: 0.5,
+  reverse: true,
+  animatedIn: 'animated-in',
+  offsetAttr: 'data-offset',
+  animationAttr: 'data-animation',
+  mobileDisabled: true
+})
 ```
