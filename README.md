@@ -1,20 +1,24 @@
-# CSS and jQuery <br /> animations on scroll.
+# Animate DOM Elements when they enter the browser viewport
 
 ## Usage
 
-1. Include <a href="https://daneden.github.io/animate.css/" target="_blank">animate.css</a> in your project.
+In your HTML create the elements that you want to animated.
+The default classname is `animated`.
 
-2. Include animated.css in your project
-	
-3. Include <a href="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" target="_blank">jQuery</a> in your project.
-	
-4. Include animated.min.js in your project.
-	
-5. Add "animated" classname to the element that you want to animate
+```
+import 'animatedjs';
 
-6. Add the <a href="https://github.com/daneden/animate.css#readme" target="_blank">animation name</a> that you like as a "data-animation" attribute to the element: 
+const animated = new Animated('.animated', {
+  offset: 0.5,
+  reverse: true,
+  animatedIn: 'animated-in',
+  offsetAttr: 'data-offset',
+  animationAttr: 'data-animation',
+  mobileDisabled: true
+})
+```
 
-	`<li class="col-sm-3 animated" data-animation="rubberBand"></li>`
+If you wish to use the defaults, make sure to add the css file, or code your own.
 
 ## Options
 
@@ -22,7 +26,7 @@
 
 	`animatedIn: 'animated-in'`
 
-2. Set the animation delay in pixels via "data-offset" attribute
+2. Set the animation delay in pixels via "data-offset" attribute. You can change this attrubute in the options.
 
 	`data-offset="120"`
 
@@ -42,6 +46,8 @@
 
 	`reverse: false`
 
+6. Optionally, you can use an external library such as `animates.css`. If you choose to do so make sure that you add the animation name in the `data-animation` attribute of your DOM element. You can modify this attribute's name in the options.
+
 ## Supported Browsers
 
 All browsers which know CSS transitions are supported.
@@ -53,12 +59,12 @@ Just remember to add all vendor prefixes, just in case :)
 ## Example setup:
 
 ```
-	$(document).ready(function() {
-		$('.animated').animated({
-			animatedIn: 'animated-in',
-			offset: 0.8,
-			reverse: false,
-			mobileDisabled: true
-		});
-	});
+	new Animated('.animated', {
+	  offset: 0.5,
+	  reverse: true,
+	  animatedIn: 'animated-in',
+	  offsetAttr: 'data-offset',
+	  animationAttr: 'data-animation',
+	  mobileDisabled: true
+	})
 ```
