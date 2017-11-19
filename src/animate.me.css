@@ -1,7 +1,0 @@
-/* ------------------------------------------------------------ *\
-	Animations
-\* ------------------------------------------------------------ */
-
-.animated { opacity: 0; visibility: hidden; transition: opacity .8s ease-in-out, visibility .8s ease-in-out; }
-
-.animated-in { opacity: 1; visibility: visible; }

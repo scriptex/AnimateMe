@@ -8,16 +8,9 @@ In your HTML create the elements that you want to animated.
 The default classname is `animated`.
 
 ```
-import 'animateme';
+import AnimateMe from 'animateme/src/animate.me.js';
 
-const animated = new AnimateMe('.animated', {
-  offset: 0.5,
-  reverse: true,
-  animatedIn: 'animated-in',
-  offsetAttr: 'data-offset',
-  animationAttr: 'data-animation',
-  mobileDisabled: true
-})
+new AnimateMe();
 ```
 
 If you wish to use the defaults, make sure to add the css file, or code your own.
@@ -61,10 +54,10 @@ Just remember to add all vendor prefixes, just in case :)
 ## Example setup:
 
 ```
-new Animated('.animated', {
+new AnimateMe('.animated', {
   offset: 0.5,
   reverse: true,
-  animatedIn: 'animated-in',
+  animatedIn: 'animate-me--in',
   offsetAttr: 'data-offset',
   animationAttr: 'data-animation',
   mobileDisabled: true
