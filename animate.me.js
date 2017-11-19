@@ -8,7 +8,7 @@ export default class AnimateMe {
         animatedIn: 'animate-me--in',
         offsetAttr: 'data-offset',
         animationAttr: 'data-animation',
-        mobileDisabled: true
+        touchDisabled: true
       },
       options
     );
@@ -75,7 +75,7 @@ export default class AnimateMe {
     [].forEach.call(this.animated, (element, i) => {
       const animationName = element.getAttribute(opts.animationAttr) || '';
 
-      if (opts.mobileDisabled && app.isTouchDevice) {
+      if (opts.touchDisabled && app.isTouchDevice) {
         element.classList.add(opts.animatedIn);
       } else {
         const shouldAnimate = app.winO + app.winH * opts.offset > app.offsets[i];

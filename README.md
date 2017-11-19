@@ -4,30 +4,34 @@ Animate DOM Elements when they enter the browser viewport
 
 ## Usage
 
-In your HTML create the elements that you want to animated.
-The default classname is `animated`.
+In your HTML create the elements that you want to be animated.
+The default classname used for the animations is `animate-me`.
 
+Then
 ```
-import AnimateMe from 'animateme/src/animate.me.js';
+import AnimateMe from 'animateme';
+```
 
+and initialize the constructor with
+```
 new AnimateMe();
 ```
 
-If you wish to use the defaults, make sure to add the css file, or code your own.
+If you wish to use the defaults, make sure to add the predefined css file or add your own.
 
 ## Options
 
-1. Set your own classname for the animated element when in viewport. Remember to update animated.css too!
+1. Set your own classname for the animated element when in viewport. 
 
 	`animatedIn: 'animated-in'`
 
-2. Set the animation delay in pixels via "data-offset" attribute. You can change this attrubute in the options.
+2. Set the animation delay in pixels via "data-offset" attribute. You can change this attrubute name in the options.
 
 	`data-offset="120"`
 
-3. Choose to run the animations on mobile devices (tablets and phones)
+3. Choose to disable the animations on touch devices 
 
-	`mobileDisabled: true`
+	`mobileDisabled: false`
 
 4. Choose the start point of the animation relatively to the viewport.
 
@@ -41,7 +45,7 @@ If you wish to use the defaults, make sure to add the css file, or code your own
 
 	`reverse: false`
 
-6. Optionally, you can use an external library such as `animates.css`. If you choose to do so make sure that you add the animation name in the `data-animation` attribute of your DOM element. You can modify this attribute's name in the options.
+6. Optionally, you can use an external library such as `animates.css`. If you choose to do so make sure that you add the animation name in the `data-animation` attribute of your DOM element. You can modify this attribute name in the options.
 
 ## Supported Browsers
 
@@ -55,11 +59,11 @@ Just remember to add all vendor prefixes, just in case :)
 
 ```
 new AnimateMe('.animated', {
-  offset: 0.5,
-  reverse: true,
-  animatedIn: 'animate-me--in',
-  offsetAttr: 'data-offset',
-  animationAttr: 'data-animation',
-  mobileDisabled: true
-})
+  offset: 0.5,                     // Element will animate in when above the half of the viewport
+  reverse: true,                   // Element will animate out when below the half of the viewport
+  animatedIn: 'animate-me--in',    // Classname to add to the element when above half of the viewport
+  offsetAttr: 'data-offset',       // Element's offset attribute
+  animationAttr: 'data-animation', // Element's custom animation name
+  touchDisabled: true              // Animations will not run on touch devices
+});
 ```
