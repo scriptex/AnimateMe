@@ -1,4 +1,6 @@
-# Animate DOM Elements when they enter the browser viewport
+# Animate Me
+
+Animate DOM Elements when they enter the browser viewport
 
 ## Usage
 
@@ -6,9 +8,9 @@ In your HTML create the elements that you want to animated.
 The default classname is `animated`.
 
 ```
-import 'animatedjs';
+import 'animateme';
 
-const animated = new Animated('.animated', {
+const animated = new AnimateMe('.animated', {
   offset: 0.5,
   reverse: true,
   animatedIn: 'animated-in',

@@ -1,4 +1,4 @@
-export default class Animated {
+export default class AnimateMe {
   constructor(selector = '.animated', options = {}) {
     this.options = {
       offset: 0.5,

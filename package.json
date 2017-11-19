@@ -1,18 +1,18 @@
 {
-  "name": "animatedjs",
+  "name": "animateme",
   "version": "1.0.0",
   "description": "Animate DOM elements when they enter the viewport",
   "main": "./src/animated.js",
   "style": "./src.animated.css",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/scriptex/Animated.git"
+    "url": "git+https://github.com/scriptex/AnimateMe.git"
   },
-  "keywords": ["Animations", "Scroll", "Animate JS", "Custom", "Animations", "Javascript"],
+  "keywords": ["JS Animation", "Scroll Animation", "CSS Animation", "Custom Animation", "Animations"],
   "author": "Atanas Atanasov <scriptex.bg@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/scriptex/Animated/issues"
+    "url": "https://github.com/scriptex/AnimateMe/issues"
   },
-  "homepage": "https://github.com/scriptex/Animated#readme"
+  "homepage": "https://github.com/scriptex/AnimateMe#readme"
 }
