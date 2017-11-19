@@ -2,8 +2,8 @@
   "name": "animateme",
   "version": "1.0.1",
   "description": "Animate DOM elements when they enter the viewport",
-  "main": "./src/animated.js",
-  "style": "./src.animated.css",
+  "main": "./src/animate.me.js",
+  "style": "./src.animate.me.css",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/scriptex/AnimateMe.git"
