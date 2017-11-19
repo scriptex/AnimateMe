@@ -1,0 +1,26 @@
+{
+  "name": "animated",
+  "version": "1.0.0",
+  "description": "Animate DOM elements when they enter the viewport",
+  "main": "./src/animated.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scriptex/Animated.git"
+  },
+  "keywords": [
+    "Animations",
+    "Scroll",
+    "Animate",
+    "Custom",
+    "animations"
+  ],
+  "author": "Atanas Atanasov <scriptex.bg@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/scriptex/Animated/issues"
+  },
+  "homepage": "https://github.com/scriptex/Animated#readme"
+}
