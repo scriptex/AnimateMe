@@ -18,6 +18,14 @@ export default class AnimateMe {
     this.animated = document.querySelectorAll(selector);
     this.isTouchDevice = 'ontouchstart' in this.win || navigator.msMaxTouchPoints > 0 || navigator.maxTouchPoints > 0;
 
+    if (this.options.offset > 1) {
+      this.options.offset = 1;
+    }
+
+    if (this.options.offset < 0) {
+      this.options.offset = 0;
+    }
+
     this.getCurrentScroll();
     this.getWindowDimensions();
 
