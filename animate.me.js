@@ -1,5 +1,5 @@
 export default class AnimateMe {
-  constructor(selector = '.animate-me', options = {}) {
+  (selector = '.animate-me', options = {}) {
     this.options = Object.assign(
       {},
       {
@@ -33,6 +33,8 @@ export default class AnimateMe {
     this.getWindowDimensions();
 
     this.start();
+
+    return this;
   }
 
   start() {
