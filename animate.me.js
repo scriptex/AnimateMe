@@ -1,5 +1,5 @@
 export default class AnimateMe {
-  (selector = '.animate-me', options = {}) {
+  constructor(selector = '.animate-me', options = {}) {
     this.options = Object.assign(
       {},
       {
