@@ -96,3 +96,7 @@ new AnimateMe('.animated', {
   touchDisabled: true              // Animations will not run on touch devices
 });
 ```
+
+## Demo
+
+Please see [this pen](https://codepen.io/scriptex/pen/YYKRXK)
