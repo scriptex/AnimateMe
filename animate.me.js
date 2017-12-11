@@ -16,7 +16,10 @@ export default class AnimateMe {
     this.win = window;
     this.offsets = [];
     this.animated = document.querySelectorAll(selector);
-    this.isTouchDevice = 'ontouchstart' in this.win || navigator.msMaxTouchPoints > 0 || navigator.maxTouchPoints > 0;
+    this.isTouchDevice =
+      'ontouchstart' in this.win ||
+      navigator.msMaxTouchPoints > 0 ||
+      navigator.maxTouchPoints > 0;
 
     if (this.options.offset > 1) {
       this.options.offset = 1;
@@ -47,15 +50,9 @@ export default class AnimateMe {
   }
 
   bind() {
-    this.win.addEventListener(
-      'load',
-      () => {
-        this.getCurrentScroll();
-        this.updateOffsets();
-        this.animate();
-      },
-      false
-    );
+    this.getCurrentScroll();
+    this.updateOffsets();
+    this.animate();
 
     this.win.addEventListener(
       'scroll',
@@ -86,11 +83,13 @@ export default class AnimateMe {
       if (opts.touchDisabled && app.isTouchDevice) {
         element.classList.add(opts.animatedIn);
       } else {
-        const shouldAnimate = app.winO + app.winH * opts.offset > app.offsets[i];
+        const shouldAnimate =
+          app.winO + app.winH * opts.offset > app.offsets[i];
 
         if (opts.reverse) {
           element.classList.toggle(opts.animatedIn, shouldAnimate);
-          animationName && element.classList.toggle(animationName, shouldAnimate);
+          animationName &&
+            element.classList.toggle(animationName, shouldAnimate);
         } else {
           if (shouldAnimate) {
             element.classList.add(opts.animatedIn);
@@ -105,8 +104,10 @@ export default class AnimateMe {
     const app = this;
 
     app.offsets = [].map.call(app.animated, element => {
-      const elementOffset = element.getBoundingClientRect().top + app.win.scrollY;
-      const offsetDelay = parseFloat(element.getAttribute(app.options.offsetAttr)) || 0;
+      const elementOffset =
+        element.getBoundingClientRect().top + app.win.scrollY;
+      const offsetDelay =
+        parseFloat(element.getAttribute(app.options.offsetAttr)) || 0;
 
       return elementOffset + offsetDelay;
     });
