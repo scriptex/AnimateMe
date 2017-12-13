@@ -1,6 +1,6 @@
 {
   "name": "animateme",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Animate DOM elements when they enter the viewport",
   "main": "./animate.me.js",
   "style": "./animate.me.css",

@@ -107,7 +107,7 @@ export default class AnimateMe {
 
     app.offsets = [].map.call(app.animated, element => {
       const elementOffset =
-        element.getBoundingClientRect().top + app.win.scrollY;
+        element.getBoundingClientRect().top + app.win.pageYOffset;
       const offsetDelay =
         parseFloat(element.getAttribute(app.options.offsetAttr)) || 0;
 
