@@ -46,6 +46,10 @@ new AnimateMe('.your-element', {
 
 If you wish to use the defaults, make sure to include the predefined css file. 
 
+AnimateMe assumes you have modern JS environment and are using a module bundler such as Webpack.
+
+If you wish to support older browsers, such as IE 11, you should include a polyfill for `Object.assign`.
+
 ## Options
 
 1. Set your own classname for the animated element when in viewport:
