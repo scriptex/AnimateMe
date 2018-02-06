@@ -8,7 +8,7 @@ Animate DOM Elements when they enter/leave the browser viewport
 npm i animateme
 ```
 
-or 
+or
 
 ```
 yarn add animateme
@@ -44,7 +44,11 @@ new AnimateMe('.your-element', {
 })
 ```
 
-If you wish to use the defaults, make sure to include the predefined css file. 
+If you wish to use the defaults, make sure to include the predefined css file.
+
+```
+@import 'animateme/animate.me.css';
+```
 
 AnimateMe assumes you have modern JS environment and are using a module bundler such as Webpack.
 
@@ -54,31 +58,31 @@ If you wish to support older browsers, such as IE 11, you should include a polyf
 
 1. Set your own classname for the animated element when in viewport:
 
-	`animatedIn: 'animate-me--in'`
+   `animatedIn: 'animate-me--in'`
 
 2. Set the animation delay in pixels via "data-offset" attribute. This attribute is added to the HTML element you want to animate. You can change this attrubute name in the options:
 
-	`data-offset="120"`
+   `data-offset="120"`
 
-3. Choose to disable the animations on touch devices 
+3. Choose to disable the animations on touch devices
 
-	`mobileDisabled: false`
+   `mobileDisabled: false`
 
 4. Choose the start point of the animation relatively to the viewport:
 
-	`offset: 0.8`
+   `offset: 0.8`
 
-	0.8 means that the animation will start when the top of the element is at 80% from the top of the viewport
+   0.8 means that the animation will start when the top of the element is at 80% from the top of the viewport
 
-	This number should be between 0 and 1.
+   This number should be between 0 and 1.
 
 5. Choose whether to run the animation every time the element enter the viewport:
 
-	`reverse: false`
+   `reverse: false`
 
 6. Optionally, you can use an external library such as [Animate.css](https://daneden.github.io/animate.css/). If you choose to do so, make sure that you add the animation name in the `data-animation` attribute of your DOM element. You can modify this attribute name in the options:
 
-  `data-animation="bounce"`
+`data-animation="bounce"`
 
 ## Supported Browsers
 
