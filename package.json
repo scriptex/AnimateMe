@@ -1,9 +1,12 @@
 {
   "name": "animateme",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Animate DOM elements when they enter the viewport",
-  "main": "./animate.me.js",
-  "style": "./animate.me.css",
+  "main": "dist/animate.me.js",
+  "style": "dist/animate.me.css",
+  "scripts": {
+    "build": "babel src -d dist"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/scriptex/AnimateMe.git"
@@ -20,5 +23,11 @@
   "bugs": {
     "url": "https://github.com/scriptex/AnimateMe/issues"
   },
-  "homepage": "https://github.com/scriptex/AnimateMe#readme"
+  "homepage": "https://github.com/scriptex/AnimateMe#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.42",
+    "@babel/core": "^7.0.0-beta.42",
+    "@babel/preset-env": "^7.0.0-beta.42",
+    "@babel/preset-stage-2": "^7.0.0-beta.42"
+  }
 }
