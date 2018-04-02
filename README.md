@@ -47,7 +47,7 @@ new AnimateMe('.your-element', {
 If you wish to use the defaults, make sure to include the predefined css file.
 
 ```
-@import 'animateme/animate.me.css';
+@import 'animateme/dist/animate.me.css';
 ```
 
 AnimateMe assumes you have modern JS environment and are using a module bundler such as Webpack.
