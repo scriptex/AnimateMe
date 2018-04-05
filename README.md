@@ -66,7 +66,7 @@ If you wish to support older browsers, such as IE 11, you should include a polyf
 
 3. Choose to disable the animations on touch devices
 
-   `mobileDisabled: false`
+   `touchDisabled: false`
 
 4. Choose the start point of the animation relatively to the viewport:
 
