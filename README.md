@@ -14,6 +14,16 @@ or
 yarn add animateme
 ```
 
+or
+
+Just download this repository and link the files located in `dist` folder:
+
+```
+<link rel="stylesheet" href="dist/animate.me.css" type="text/css" media="all" />
+
+<script src="dist/animate.me.min.js"></script>
+```
+
 ## Usage
 
 In your HTML create the elements that you want to be animated.
@@ -56,31 +66,31 @@ If you wish to support older browsers, such as IE 11, you should include a polyf
 
 ## Options
 
-1. Set your own classname for the animated element when in viewport:
+1.  Set your own classname for the animated element when in viewport:
 
-   `animatedIn: 'animate-me--in'`
+    `animatedIn: 'animate-me--in'`
 
-2. Set the animation delay in pixels via "data-offset" attribute. This attribute is added to the HTML element you want to animate. You can change this attrubute name in the options:
+2.  Set the animation delay in pixels via "data-offset" attribute. This attribute is added to the HTML element you want to animate. You can change this attrubute name in the options:
 
-   `data-offset="120"`
+    `data-offset="120"`
 
-3. Choose to disable the animations on touch devices
+3.  Choose to disable the animations on touch devices
 
-   `touchDisabled: false`
+    `touchDisabled: false`
 
-4. Choose the start point of the animation relatively to the viewport:
+4.  Choose the start point of the animation relatively to the viewport:
 
-   `offset: 0.8`
+    `offset: 0.8`
 
-   0.8 means that the animation will start when the top of the element is at 80% from the top of the viewport
+    0.8 means that the animation will start when the top of the element is at 80% from the top of the viewport
 
-   This number should be between 0 and 1.
+    This number should be between 0 and 1.
 
-5. Choose whether to run the animation every time the element enter the viewport:
+5.  Choose whether to run the animation every time the element enter the viewport:
 
-   `reverse: false`
+    `reverse: false`
 
-6. Optionally, you can use an external library such as [Animate.css](https://daneden.github.io/animate.css/). If you choose to do so, make sure that you add the animation name in the `data-animation` attribute of your DOM element. You can modify this attribute name in the options:
+6.  Optionally, you can use an external library such as [Animate.css](https://daneden.github.io/animate.css/). If you choose to do so, make sure that you add the animation name in the `data-animation` attribute of your DOM element. You can modify this attribute name in the options:
 
 `data-animation="bounce"`
 
@@ -95,7 +105,7 @@ Just remember to add all vendor prefixes, just in case :)
 ## Default setup:
 
 ```
-new AnimateMe('.animated', {
+new AnimateMe('.animate-me', {
   offset: 0.5,                     // Element will animate in when above the half of the viewport
   reverse: true,                   // Element will animate out when below the half of the viewport
   animatedIn: 'animate-me--in',    // Classname to add to the element when above half of the viewport
@@ -104,7 +114,3 @@ new AnimateMe('.animated', {
   touchDisabled: true              // Animations will not run on touch devices
 });
 ```
-
-## Demo
-
-Please see [this pen](https://codepen.io/scriptex/pen/YYKRXK)
