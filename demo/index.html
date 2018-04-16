@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+
+	<title>Animate Me Demo</title>
+
+	<link rel="stylesheet" href="../dist/animate.me.css" />
+
+	<style type="text/css" media="screen">
+		html,
+		body {
+			height: 100%;
+		}
+
+		body {
+			margin: 0;
+		}
+
+		.animate-me {
+			font-family: sans-serif;
+			font-size: 2vw;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 75vh;
+		}
+	</style>
+</head>
+<body>
+	<div class="animate-me" style="background-color: red;">1st section</div>
+
+	<div class="animate-me" style="background-color: blue;">2nd section</div>
+
+	<div class="animate-me" style="background-color: green;">3rd section</div>
+
+	<div class="animate-me" style="background-color: yellow;">4th section</div>
+
+	<div class="animate-me" style="background-color: lavender;">5th section</div>
+
+	<script src="../dist/animate.me.min.js"></script>
+
+	<script type="module">
+		import AnimateMe from '../src/animate.me.js';
+
+		new AnimateMe();
+	</script>
+</body>
+</html>
