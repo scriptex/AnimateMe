@@ -27,6 +27,7 @@ Just download this repository and link the files located in `dist` folder:
 ## Usage
 
 In your HTML create the elements that you want to be animated.
+
 The default classname used for the animations is `animate-me`.
 
 Then
@@ -114,3 +115,7 @@ new AnimateMe('.animate-me', {
   touchDisabled: true              // Animations will not run on touch devices
 });
 ```
+
+## LICENSE
+
+MIT
