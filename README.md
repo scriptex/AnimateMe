@@ -16,13 +16,7 @@ yarn add animateme
 
 or
 
-Just download this repository and link the files located in `dist` folder:
-
-```
-<link rel="stylesheet" href="dist/animate.me.css" type="text/css" media="all" />
-
-<script src="dist/animate.me.min.js"></script>
-```
+Just download this repository and link the files located in `dist` folder.
 
 ## Usage
 
