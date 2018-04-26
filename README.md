@@ -1,3 +1,11 @@
+[![GitHub stars](https://img.shields.io/github/stars/scriptex/AnimateMe.svg?style=social&label=Stars)](https://github.com/scriptex/AnimateMe)
+[![npm](https://img.shields.io/npm/dt/animateme.svg)](https://www.npmjs.com/package/animateme)
+[![npm](https://img.shields.io/npm/v/animateme.svg)](https://www.npmjs.com/package/animateme)
+[![GitHub issues](https://img.shields.io/github/issues/scriptex/AnimateMe.svg)](https://github.com/scriptex/AnimateMe)
+[![GitHub last commit](https://img.shields.io/github/last-commit/scriptex/AnimateMe.svg)](https://github.com/scriptex/AnimateMe)
+[![license](https://img.shields.io/github/license/scriptex/AnimateMe.svg)](https://github.com/scriptex/AnimateMe)
+[![Github file size](https://img.shields.io/github/size/scriptex/AnimateMe/dist/animate.me.min.js.svg)](https://github.com/scriptex/AnimateMe)
+
 # Animate Me
 
 Animate DOM Elements when they enter/leave the browser viewport
