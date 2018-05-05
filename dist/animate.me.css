@@ -1,8 +1,11 @@
 .animate-me {
 	opacity: 0;
 	visibility: hidden;
+	-webkit-transform: translateY(10vh);
 	transform: translateY(10vh);
+	transition-property: opacity, visibility, -webkit-transform;
 	transition-property: opacity, visibility, transform;
+	transition-property: opacity, visibility, transform, -webkit-transform;
 	transition-duration: 0.8s;
 	transition-timing-function: ease-in-out;
 }
@@ -10,5 +13,6 @@
 .animate-me--in {
 	opacity: 1;
 	visibility: visible;
+	-webkit-transform: translateY(0vh);
 	transform: translateY(0vh);
 }
