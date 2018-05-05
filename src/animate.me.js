@@ -1,18 +1,14 @@
 export default class AnimateMe {
   constructor(selector = '.animate-me', options = {}) {
-    this.options = Object.assign(
-      {},
-      {
-        offset: 0.5,
-        reverse: true,
-        animatedIn: 'animate-me--in',
-        offsetAttr: 'data-offset',
-        animationAttr: 'data-animation',
-        touchDisabled: true
-      },
-      options
-    );
-
+    this.options = {
+      offset: 0.5,
+      reverse: true,
+      animatedIn: 'animate-me--in',
+      offsetAttr: 'data-offset',
+      animationAttr: 'data-animation',
+      touchDisabled: true,
+      ...options
+    };
     this.win = window;
     this.offsets = [];
     this.animated = document.querySelectorAll(selector);
