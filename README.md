@@ -1,6 +1,16 @@
 # Animate Me
 
-Animate DOM Elements when they enter/leave the browser viewport
+Animate DOM elements when they enter/leave the browser viewport.
+
+This library uses a small amount on JavaScript and leaves the actual animations to the CSS.
+
+You have the freedom to implement your own animations, use predefined (via another library) or use the built-in fade in/out animation.
+
+## Dependencies
+
+There are no dependencies and the library is ready to be used in any environment.
+
+If you, however, wish to develop the library, extend it, fix it, etc, you need to install its development dependencies.
 
 ## Install
 
@@ -16,13 +26,13 @@ yarn add animateme
 
 or
 
-Just download this repository and link the files located in `dist` folder.
+just download this repository and use the files located in `dist` folder.
 
 ## Usage
 
 In your HTML create the elements that you want to be animated.
 
-The default classname used for the animations is `animate-me`.
+The default class name used for the animations is `animate-me`.
 
 Then
 
@@ -42,22 +52,20 @@ or use your own settings
 new AnimateMe('.your-element', {
   offset: 0.8,
   reverse: false,
-  animatedIn: 'your-custom-classname',
+  animatedIn: 'your-custom-class',
   offsetAttr: 'data-offset-top',
   animationAttr: 'data-animation-name',
   touchDisabled: false
 })
 ```
 
-If you wish to use the defaults, make sure to include the predefined css file.
+If you wish to use the defaults, make sure to include the predefined CSS file.
 
 ```
 @import 'animateme/dist/animate.me.css';
 ```
 
-AnimateMe assumes you have modern JS environment and are using a module bundler such as Webpack.
-
-If you wish to support older browsers, such as IE 11, you should include a polyfill for `Object.assign`.
+or just use it as a good old `<link>` tag.
 
 ## Options
 
@@ -65,7 +73,7 @@ If you wish to support older browsers, such as IE 11, you should include a polyf
 
     `animatedIn: 'animate-me--in'`
 
-2.  Set the animation delay in pixels via "data-offset" attribute. This attribute is added to the HTML element you want to animate. You can change this attrubute name in the options:
+2.  Set the animation delay in pixels via `"data-offset"` attribute. This attribute is added to the HTML element you want to animate. You can change this attrubute name in the options:
 
     `data-offset="120"`
 
@@ -73,11 +81,11 @@ If you wish to support older browsers, such as IE 11, you should include a polyf
 
     `touchDisabled: false`
 
-4.  Choose the start point of the animation relatively to the viewport:
+4.  Choose the start point of the animations relatively to the viewport:
 
     `offset: 0.8`
 
-    0.8 means that the animation will start when the top of the element is at 80% from the top of the viewport
+    0.8 means that all animations will start when the top of the element is at 80% from the top of the viewport
 
     This number should be between 0 and 1.
 
@@ -95,7 +103,7 @@ All browsers which know CSS transitions are supported.
 
 IE9 and below will simply ignore the transitions and show the content as is.
 
-Just remember to add all vendor prefixes, just in case :)
+Just remember to add all CSS vendor prefixes, just in case :)
 
 ## Default setup:
 
@@ -103,12 +111,18 @@ Just remember to add all vendor prefixes, just in case :)
 new AnimateMe('.animate-me', {
   offset: 0.5,                     // Element will animate in when above the half of the viewport
   reverse: true,                   // Element will animate out when below the half of the viewport
-  animatedIn: 'animate-me--in',    // Classname to add to the element when above half of the viewport
+  animatedIn: 'animate-me--in',    // Class name to add to the element when above half of the viewport
   offsetAttr: 'data-offset',       // Element's offset attribute
   animationAttr: 'data-animation', // Element's custom animation name
   touchDisabled: true              // Animations will not run on touch devices
 });
 ```
+
+## Demo
+
+There is a simple demo illustrating how the AnimateMe library works.
+
+Check the [demo](https://github.com/scriptex/AnimateMe/blob/master/demo/index.html) out.
 
 ## LICENSE
 
