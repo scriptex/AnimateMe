@@ -9,7 +9,7 @@
 [![license](https://img.shields.io/github/license/scriptex/AnimateMe.svg)](https://github.com/scriptex/AnimateMe)
 [![Analytics](https://ga-beacon.appspot.com/UA-83446952-1/github.com/scriptex/AnimateMe/README.md)](https://github.com/scriptex/AnimateMe/)
 [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/scriptex/AnimateMe/)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/scriptex/AnimateMe/webpack.config.js/graphs/commit-activity)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/scriptex/AnimateMe/graphs/commit-activity)
 
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/scriptex/)
 
