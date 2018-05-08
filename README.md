@@ -29,13 +29,13 @@ If you, however, wish to develop the library, extend it, fix it, etc, you need t
 
 ## Install
 
-```
+```console
 npm i animateme
 ```
 
 or
 
-```
+```console
 yarn add animateme
 ```
 
@@ -51,19 +51,19 @@ The default class name used for the animations is `animate-me`.
 
 Then
 
-```
+```javascript
 import AnimateMe from 'animateme';
 ```
 
 and create a new instance with the default settings
 
-```
+```javascript
 new AnimateMe();
 ```
 
 or use your own settings
 
-```
+```javascript
 new AnimateMe('.your-element', {
   offset: 0.8,
   reverse: false,
@@ -76,7 +76,7 @@ new AnimateMe('.your-element', {
 
 If you wish to use the defaults, make sure to include the predefined CSS file.
 
-```
+```css
 @import 'animateme/dist/animate.me.css';
 ```
 
@@ -122,7 +122,7 @@ Just remember to add all CSS vendor prefixes, just in case :)
 
 ## Default setup:
 
-```
+```javascript
 new AnimateMe('.animate-me', {
   offset: 0.5,                     // Element will animate in when above the half of the viewport
   reverse: true,                   // Element will animate out when below the half of the viewport
