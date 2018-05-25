@@ -28,6 +28,9 @@ export default class AnimateMe {
     this.getCurrentScroll();
     this.getWindowDimensions();
 
+    this.scrollListener = this.scrollListener.bind(this);
+    this.resizeListener = this.resizeListener.bind(this);
+
     this.start();
 
     return this;
@@ -47,28 +50,36 @@ export default class AnimateMe {
     this.winW = this.win.innerWidth;
   }
 
+  scrollListener() {
+    this.getCurrentScroll();
+    this.animate();
+  }
+
+  resizeListener() {
+    this.getWindowDimensions();
+    this.updateOffsets();
+  }
+
   bind() {
     this.getCurrentScroll();
     this.updateOffsets();
     this.animate();
 
-    this.win.addEventListener(
-      'scroll',
-      () => {
-        this.getCurrentScroll();
-        this.animate();
-      },
-      false
-    );
+    this.win.addEventListener('scroll', this.scrollListener, false);
+    this.win.addEventListener('resize', this.resizeListener, false);
+  }
 
-    this.win.addEventListener(
-      'resize',
-      () => {
-        this.getWindowDimensions();
-        this.updateOffsets();
-      },
-      false
-    );
+  unbind() {
+    this.win.removeEventListener('scroll', this.scrollListener, false);
+    this.win.removeEventListener('resize', this.resizeListener, false);
+  }
+
+  destroy() {
+    this.unbind();
+
+    [].forEach.call(this.animated, element => {
+      element.classList.remove(this.options.animatedIn);
+    });
   }
 
   animate() {
