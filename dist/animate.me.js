@@ -133,6 +133,8 @@ function () {
 
     this.getCurrentScroll();
     this.getWindowDimensions();
+    this.scrollListener = this.scrollListener.bind(this);
+    this.resizeListener = this.resizeListener.bind(this);
     this.start();
     return this;
   }
@@ -155,23 +157,41 @@ function () {
       this.winW = this.win.innerWidth;
     }
   }, {
+    key: "scrollListener",
+    value: function scrollListener() {
+      this.getCurrentScroll();
+      this.animate();
+    }
+  }, {
+    key: "resizeListener",
+    value: function resizeListener() {
+      this.getWindowDimensions();
+      this.updateOffsets();
+    }
+  }, {
     key: "bind",
     value: function bind() {
-      var _this = this;
-
       this.getCurrentScroll();
       this.updateOffsets();
       this.animate();
-      this.win.addEventListener('scroll', function () {
-        _this.getCurrentScroll();
+      this.win.addEventListener('scroll', this.scrollListener, false);
+      this.win.addEventListener('resize', this.resizeListener, false);
+    }
+  }, {
+    key: "unbind",
+    value: function unbind() {
+      this.win.removeEventListener('scroll', this.scrollListener, false);
+      this.win.removeEventListener('resize', this.resizeListener, false);
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      var _this = this;
 
-        _this.animate();
-      }, false);
-      this.win.addEventListener('resize', function () {
-        _this.getWindowDimensions();
-
-        _this.updateOffsets();
-      }, false);
+      this.unbind();
+      [].forEach.call(this.animated, function (element) {
+        element.classList.remove(_this.options.animatedIn);
+      });
     }
   }, {
     key: "animate",
