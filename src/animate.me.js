@@ -74,12 +74,15 @@ export default class AnimateMe {
     this.win.removeEventListener('resize', this.resizeListener, false);
   }
 
-  destroy() {
-    this.unbind();
-
-    [].forEach.call(this.animated, element => {
+  cleanup(elements = this.animated) {
+    [].forEach.call(elements, element => {
       element.classList.remove(this.options.animatedIn);
     });
+  }
+
+  destroy() {
+    this.unbind();
+    this.cleanup();
   }
 
   animate() {
