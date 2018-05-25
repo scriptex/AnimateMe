@@ -133,6 +133,25 @@ new AnimateMe('.animate-me', {
 });
 ```
 
+## Destroy animations / event listeners
+
+If you want to stop AnimateMe, there are two ways to do so:
+
+1.  Calling `unbind` on the instance will remove all event listeners which will cause your animations to stop working.
+2.  Calling `destroy` will remove all event listeners and all CSS classes set to your elements, effectively restoring their initial state.
+
+Example:
+
+```javascript
+const instance = new AnimateMe();
+
+// Remove event listeners but keep the CSS classes
+instance.unbind();
+
+// Remove event listeners and the CSS classes
+instance.destroy();
+```
+
 ## Demo
 
 There is a simple demo illustrating how the AnimateMe library works.
