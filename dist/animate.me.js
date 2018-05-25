@@ -184,14 +184,20 @@ function () {
       this.win.removeEventListener('resize', this.resizeListener, false);
     }
   }, {
-    key: "destroy",
-    value: function destroy() {
+    key: "cleanup",
+    value: function cleanup() {
       var _this = this;
 
-      this.unbind();
-      [].forEach.call(this.animated, function (element) {
+      var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.animated;
+      [].forEach.call(elements, function (element) {
         element.classList.remove(_this.options.animatedIn);
       });
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.unbind();
+      this.cleanup();
     }
   }, {
     key: "animate",
