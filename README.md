@@ -71,7 +71,7 @@ new AnimateMe('.your-element', {
   offsetAttr: 'data-offset-top',
   animationAttr: 'data-animation-name',
   touchDisabled: false
-})
+});
 ```
 
 If you wish to use the defaults, make sure to include the predefined CSS file.
@@ -124,12 +124,12 @@ Just remember to add all CSS vendor prefixes, just in case :)
 
 ```javascript
 new AnimateMe('.animate-me', {
-  offset: 0.5,                     // Element will animate in when above the half of the viewport
-  reverse: true,                   // Element will animate out when below the half of the viewport
-  animatedIn: 'animate-me--in',    // Class name to add to the element when above half of the viewport
-  offsetAttr: 'data-offset',       // Element's offset attribute
+  offset: 0.5, // Element will animate in when above the half of the viewport
+  reverse: true, // Element will animate out when below the half of the viewport
+  animatedIn: 'animate-me--in', // Class name to add to the element when above half of the viewport
+  offsetAttr: 'data-offset', // Element's offset attribute
   animationAttr: 'data-animation', // Element's custom animation name
-  touchDisabled: true              // Animations will not run on touch devices
+  touchDisabled: true // Animations will not run on touch devices
 });
 ```
 
@@ -138,7 +138,8 @@ new AnimateMe('.animate-me', {
 If you want to stop AnimateMe, there are two ways to do so:
 
 1.  Calling `unbind` on the instance will remove all event listeners which will cause your animations to stop working.
-2.  Calling `destroy` will remove all event listeners and all CSS classes set to your elements, effectively restoring their initial state.
+2.  Calling `cleanup` on the instance will remove all CSS classes set to your elements by AnimateMe. You can pass an array with elements to this method. This way you can tell AnimateMe exactly which elements' CSS classes you want cleaned up.
+3.  Calling `destroy` on the instance will remove all event listeners and all CSS classes set to your elements by AnimateMe, effectively restoring their initial state.
 
 Example:
 
@@ -147,6 +148,12 @@ const instance = new AnimateMe();
 
 // Remove event listeners but keep the CSS classes
 instance.unbind();
+
+// Remove CSS classes from all elements
+instance.cleanup();
+
+// Remove CSS classes from all elements with a classname of 'animate-me--clean'
+instance.cleanup(document.querySelectorAll('.animate-me--clean'));
 
 // Remove event listeners and the CSS classes
 instance.destroy();
