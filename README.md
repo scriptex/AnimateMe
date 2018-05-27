@@ -4,6 +4,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/scriptex/AnimateMe.svg)](https://github.com/scriptex/AnimateMe/issues)
 [![GitHub last commit](https://img.shields.io/github/last-commit/scriptex/AnimateMe.svg)](https://github.com/scriptex/AnimateMe/commits/master)
 [![Github file size](https://img.shields.io/github/size/scriptex/AnimateMe/dist/animate.me.min.js.svg)](https://github.com/scriptex/AnimateMe)
+[![Build Status](https://travis-ci.org/scriptex/AnimateMe.svg?branch=master)](https://travis-ci.org/scriptex/AnimateMe)
 [![npm](https://img.shields.io/npm/dt/animateme.svg)](https://www.npmjs.com/package/animateme)
 [![npm](https://img.shields.io/npm/v/animateme.svg)](https://www.npmjs.com/package/animateme)
 [![license](https://img.shields.io/github/license/scriptex/AnimateMe.svg)](https://github.com/scriptex/AnimateMe)
