@@ -194,7 +194,7 @@ window.dispatchEvent(enable);
 
 There is a simple demo illustrating how the AnimateMe library works.
 
-Check the [demo](https://github.com/scriptex/AnimateMe/blob/master/demo/index.html) out.
+Check it out [here](https://github.com/scriptex/AnimateMe/blob/master/demo/index.html) or [here](https://codepen.io/scriptex/full/YYKRXK/).
 
 ## LICENSE
 
