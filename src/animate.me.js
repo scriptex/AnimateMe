@@ -31,6 +31,11 @@ export default class AnimateMe {
     this.scrollListener = this.scrollListener.bind(this);
     this.resizeListener = this.resizeListener.bind(this);
 
+    this.start = this.start.bind(this);
+    this.cleanup = this.cleanup.bind(this);
+    this.destroy = this.destroy.bind(this);
+
+    this.listen();
     this.start();
 
     return this;
@@ -39,6 +44,12 @@ export default class AnimateMe {
   start() {
     this.updateOffsets();
     this.bind();
+  }
+
+  listen() {
+    this.win.addEventListener('animateme:enable', this.start, false);
+    this.win.addEventListener('animateme:cleanup', this.cleanup, false);
+    this.win.addEventListener('animateme:destroy', this.destroy, false);
   }
 
   getCurrentScroll() {
@@ -74,8 +85,8 @@ export default class AnimateMe {
     this.win.removeEventListener('resize', this.resizeListener, false);
   }
 
-  cleanup(elements = this.animated) {
-    [].forEach.call(elements, element => {
+  cleanup() {
+    [].forEach.call(this.animated, element => {
       element.classList.remove(this.options.animatedIn);
     });
   }
