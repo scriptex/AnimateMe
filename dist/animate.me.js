@@ -135,6 +135,10 @@ function () {
     this.getWindowDimensions();
     this.scrollListener = this.scrollListener.bind(this);
     this.resizeListener = this.resizeListener.bind(this);
+    this.start = this.start.bind(this);
+    this.cleanup = this.cleanup.bind(this);
+    this.destroy = this.destroy.bind(this);
+    this.listen();
     this.start();
     return this;
   }
@@ -144,6 +148,13 @@ function () {
     value: function start() {
       this.updateOffsets();
       this.bind();
+    }
+  }, {
+    key: "listen",
+    value: function listen() {
+      this.win.addEventListener('animateme:enable', this.start, false);
+      this.win.addEventListener('animateme:cleanup', this.cleanup, false);
+      this.win.addEventListener('animateme:destroy', this.destroy, false);
     }
   }, {
     key: "getCurrentScroll",
@@ -188,8 +199,7 @@ function () {
     value: function cleanup() {
       var _this = this;
 
-      var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.animated;
-      [].forEach.call(elements, function (element) {
+      [].forEach.call(this.animated, function (element) {
         element.classList.remove(_this.options.animatedIn);
       });
     }
