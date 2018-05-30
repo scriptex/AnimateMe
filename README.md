@@ -139,7 +139,7 @@ new AnimateMe('.animate-me', {
 If you want to stop AnimateMe, there are two ways to do so:
 
 1.  Calling `unbind` on the instance will remove all event listeners which will cause your animations to stop working.
-2.  Calling `cleanup` on the instance will remove all CSS classes set to your elements by AnimateMe. You can pass an array with elements to this method. This way you can tell AnimateMe exactly which elements' CSS classes you want cleaned up.
+2.  Calling `cleanup` on the instance will remove all CSS classes set to your elements by AnimateMe.
 3.  Calling `destroy` on the instance will remove all event listeners and all CSS classes set to your elements by AnimateMe, effectively restoring their initial state.
 
 Example:
@@ -153,12 +153,42 @@ instance.unbind();
 // Remove CSS classes from all elements
 instance.cleanup();
 
-// Remove CSS classes from all elements with a classname of 'animate-me--clean'
-instance.cleanup(document.querySelectorAll('.animate-me--clean'));
-
 // Remove event listeners and the CSS classes
 instance.destroy();
 ```
+
+## Trigger custom events
+
+It is possible to control the AnimateMe instance via custom events.
+The custom events are called on the `window` object.
+
+There are three events implemented:
+
+1.  `animateme:enable`: Enables the instance. Equals to a call to `start` on the instance.
+2.  `animateme:destroy`: Destroys the instance. Equals to a call to `destroy` on the instance.
+3.  `animateme:cleanup`: Cleans previously set CSS classes to AnimateMe elements. Equals to a call to `cleanup` on the instance.
+
+Example usage of custom events:
+
+```javascript
+// First create the custom events
+const enable = new CustomEvent('animateme:enable');
+const destroy = new CustomEvent('animateme:destroy');
+const cleanup = new CustomEvent('animateme:cleanup');
+
+// Then dispatch an event
+window.dispatchEvent(cleanup);
+window.dispatchEvent(destroy);
+window.dispatchEvent(enable);
+```
+
+**Important note:**
+
+**Internet Explorer [does not fully support](https://caniuse.com/#feat=customevent) `new CustomEvent`.**
+
+**You have to create the custom events in a way that IE understands it.**
+
+**Something like: `document.createEvent('CustomEvent')`.**
 
 ## Demo
 
