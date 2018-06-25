@@ -12,7 +12,7 @@
 [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/scriptex/AnimateMe/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/scriptex/AnimateMe/graphs/commit-activity)
 
-[![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/scriptex/)
+[![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/scriptex/) [![Greenkeeper badge](https://badges.greenkeeper.io/scriptex/AnimateMe.svg)](https://greenkeeper.io/)
 
 # Animate Me
 
