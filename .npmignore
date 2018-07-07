@@ -17,6 +17,9 @@ node_modules/
 ehthumbs.db
 Thumbs.db
 
+# Babel
+.babelrc
+
 # EditorConfig
 .editorconfig
 
