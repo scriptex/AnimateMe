@@ -33,19 +33,33 @@ If you, however, wish to develop the library, extend it, fix it, etc, you need t
 
 ## Install
 
-```console
+```sh
 npm i animateme
 ```
 
 or
 
-```console
+```sh
 yarn add animateme
 ```
 
 or
 
-just download this repository and use the files located in `dist` folder.
+Just download this repository and link the files located in dist folder:
+
+```html
+<link rel="stylesheet" href="path-to-animate-me/dist/animate.me.css" type="text/css" />
+
+<script src="path-to-animate-me/dist/animate.me.min.js"></script>
+```
+
+or
+
+Include it from Unpkg CDN
+
+```html
+<script src="//unpkg.com/animateme/dist/animate.me.min.js"></script>
+```
 
 ## Usage
 
@@ -69,12 +83,12 @@ or use your own settings
 
 ```javascript
 new AnimateMe('.your-element', {
-  offset: 0.8,
-  reverse: false,
-  animatedIn: 'your-custom-class',
-  offsetAttr: 'data-offset-top',
-  animationAttr: 'data-animation-name',
-  touchDisabled: false
+	offset: 0.8,
+	reverse: false,
+	animatedIn: 'your-custom-class',
+	offsetAttr: 'data-offset-top',
+	animationAttr: 'data-animation-name',
+	touchDisabled: false
 });
 ```
 
@@ -128,12 +142,12 @@ Just remember to add all CSS vendor prefixes, just in case :)
 
 ```javascript
 new AnimateMe('.animate-me', {
-  offset: 0.5, // Element will animate in when above the half of the viewport
-  reverse: true, // Element will animate out when below the half of the viewport
-  animatedIn: 'animate-me--in', // Class name to add to the element when above half of the viewport
-  offsetAttr: 'data-offset', // Element's offset attribute
-  animationAttr: 'data-animation', // Element's custom animation name
-  touchDisabled: true // Animations will not run on touch devices
+	offset: 0.5, // Element will animate in when above the half of the viewport
+	reverse: true, // Element will animate out when below the half of the viewport
+	animatedIn: 'animate-me--in', // Class name to add to the element when above half of the viewport
+	offsetAttr: 'data-offset', // Element's offset attribute
+	animationAttr: 'data-animation', // Element's custom animation name
+	touchDisabled: true // Animations will not run on touch devices
 });
 ```
 
