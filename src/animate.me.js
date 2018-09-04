@@ -1,138 +1,140 @@
 export default class AnimateMe {
-  constructor(selector = '.animate-me', options = {}) {
-    this.options = {
-      offset: 0.5,
-      reverse: true,
-      animatedIn: 'animate-me--in',
-      offsetAttr: 'data-offset',
-      animationAttr: 'data-animation',
-      touchDisabled: true,
-      ...options
-    };
-    this.win = window;
-    this.offsets = [];
-    this.animated = document.querySelectorAll(selector);
-    this.isTouchDevice =
-      'ontouchstart' in this.win ||
-      navigator.msMaxTouchPoints > 0 ||
-      navigator.maxTouchPoints > 0;
+	constructor(selector = '.animate-me', options = {}) {
+		this.options = {
+			offset: 0.5,
+			reverse: true,
+			animatedIn: 'animate-me--in',
+			offsetAttr: 'data-offset',
+			animationAttr: 'data-animation',
+			touchDisabled: true,
+			...options
+		};
+		this.win = window;
+		this.offsets = [];
+		this.animated = [...document.querySelectorAll(selector)];
+		this.isTouchDevice =
+			'ontouchstart' in this.win ||
+			navigator.msMaxTouchPoints > 0 ||
+			navigator.maxTouchPoints > 0;
 
-    if (this.options.offset > 1) {
-      this.options.offset = 1;
-    }
+		if (this.options.offset > 1) {
+			this.options.offset = 1;
+		}
 
-    if (this.options.offset < 0) {
-      this.options.offset = 0;
-    }
+		if (this.options.offset < 0) {
+			this.options.offset = 0;
+		}
 
-    this.getCurrentScroll();
-    this.getWindowDimensions();
+		this.getCurrentScroll();
+		this.getWindowDimensions();
 
-    this.scrollListener = this.scrollListener.bind(this);
-    this.resizeListener = this.resizeListener.bind(this);
+		this.scrollListener = this.scrollListener.bind(this);
+		this.resizeListener = this.resizeListener.bind(this);
 
-    this.start = this.start.bind(this);
-    this.cleanup = this.cleanup.bind(this);
-    this.destroy = this.destroy.bind(this);
+		this.start = this.start.bind(this);
+		this.cleanup = this.cleanup.bind(this);
+		this.destroy = this.destroy.bind(this);
 
-    this.listen();
-    this.start();
+		this.listen();
+		this.start();
 
-    return this;
-  }
+		return this;
+	}
 
-  start() {
-    this.updateOffsets();
-    this.bind();
-  }
+	start() {
+		this.updateOffsets();
+		this.bind();
+	}
 
-  listen() {
-    this.win.addEventListener('animateme:enable', this.start, false);
-    this.win.addEventListener('animateme:cleanup', this.cleanup, false);
-    this.win.addEventListener('animateme:destroy', this.destroy, false);
-  }
+	listen() {
+		this.win.addEventListener('animateme:enable', this.start, false);
+		this.win.addEventListener('animateme:cleanup', this.cleanup, false);
+		this.win.addEventListener('animateme:destroy', this.destroy, false);
+	}
 
-  getCurrentScroll() {
-    this.winO = this.win.pageYOffset;
-  }
+	getCurrentScroll() {
+		this.winO = this.win.pageYOffset;
+	}
 
-  getWindowDimensions() {
-    this.winH = this.win.innerHeight;
-    this.winW = this.win.innerWidth;
-  }
+	getWindowDimensions() {
+		this.winH = this.win.innerHeight;
+		this.winW = this.win.innerWidth;
+	}
 
-  scrollListener() {
-    this.getCurrentScroll();
-    this.animate();
-  }
+	scrollListener() {
+		this.getCurrentScroll();
+		this.animate();
+	}
 
-  resizeListener() {
-    this.getWindowDimensions();
-    this.updateOffsets();
-  }
+	resizeListener() {
+		this.getWindowDimensions();
+		this.updateOffsets();
+	}
 
-  bind() {
-    this.getCurrentScroll();
-    this.updateOffsets();
-    this.animate();
+	bind() {
+		this.getCurrentScroll();
+		this.updateOffsets();
+		this.animate();
 
-    this.win.addEventListener('scroll', this.scrollListener, false);
-    this.win.addEventListener('resize', this.resizeListener, false);
-  }
+		this.win.addEventListener('scroll', this.scrollListener, false);
+		this.win.addEventListener('resize', this.resizeListener, false);
+	}
 
-  unbind() {
-    this.win.removeEventListener('scroll', this.scrollListener, false);
-    this.win.removeEventListener('resize', this.resizeListener, false);
-  }
+	unbind() {
+		this.win.removeEventListener('scroll', this.scrollListener, false);
+		this.win.removeEventListener('resize', this.resizeListener, false);
+	}
 
-  cleanup() {
-    [].forEach.call(this.animated, element => {
-      element.classList.remove(this.options.animatedIn);
-    });
-  }
+	cleanup() {
+		// prettier-ignore
+		this.animated.forEach(element => element.classList.remove(this.options.animatedIn));
+	}
 
-  destroy() {
-    this.unbind();
-    this.cleanup();
-  }
+	destroy() {
+		this.unbind();
+		this.cleanup();
+	}
 
-  animate() {
-    const app = this;
-    const opts = app.options;
+	animate() {
+		const app = this;
+		const opts = app.options;
 
-    [].forEach.call(this.animated, (element, i) => {
-      const animationName = element.getAttribute(opts.animationAttr) || '';
+		this.animated.forEach((element, i) => {
+			const animationName = element.getAttribute(opts.animationAttr) || '';
 
-      if (opts.touchDisabled && app.isTouchDevice) {
-        element.classList.add(opts.animatedIn);
-      } else {
-        const shouldAnimate =
-          app.winO + app.winH * opts.offset > app.offsets[i];
+			if (opts.touchDisabled && app.isTouchDevice) {
+				element.classList.add(opts.animatedIn);
+			} else {
+				const shouldAnimate =
+					app.winO + app.winH * opts.offset > app.offsets[i];
 
-        if (opts.reverse) {
-          element.classList.toggle(opts.animatedIn, shouldAnimate);
-          animationName &&
-            element.classList.toggle(animationName, shouldAnimate);
-        } else {
-          if (shouldAnimate) {
-            element.classList.add(opts.animatedIn);
-            animationName && element.classList.add(animationName);
-          }
-        }
-      }
-    });
-  }
+				if (opts.reverse) {
+					element.classList.toggle(opts.animatedIn, shouldAnimate);
 
-  updateOffsets() {
-    const app = this;
+					// prettier-ignore
+					animationName && element.classList.toggle(animationName, shouldAnimate);
+				} else {
+					if (shouldAnimate) {
+						element.classList.add(opts.animatedIn);
 
-    app.offsets = [].map.call(app.animated, element => {
-      const elementOffset =
-        element.getBoundingClientRect().top + app.win.pageYOffset;
-      const offsetDelay =
-        parseFloat(element.getAttribute(app.options.offsetAttr)) || 0;
+						animationName && element.classList.add(animationName);
+					}
+				}
+			}
+		});
+	}
 
-      return elementOffset + offsetDelay;
-    });
-  }
+	updateOffsets() {
+		const app = this;
+
+		app.offsets = this.animated.map(element => {
+			// prettier-ignore
+			const elementOffset = element.getBoundingClientRect().top + app.win.pageYOffset;
+
+			// prettier-ignore
+			const offsetDelay = parseFloat(element.getAttribute(app.options.offsetAttr)) || 0;
+
+			return elementOffset + offsetDelay;
+		});
+	}
 }
