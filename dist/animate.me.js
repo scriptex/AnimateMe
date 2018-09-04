@@ -18,6 +18,14 @@
   });
   _exports.default = void 0;
 
+  function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+  function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+  function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+  function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
   function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
   function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -47,7 +55,7 @@
       }, options);
       this.win = window;
       this.offsets = [];
-      this.animated = document.querySelectorAll(selector);
+      this.animated = _toConsumableArray(document.querySelectorAll(selector));
       this.isTouchDevice = 'ontouchstart' in this.win || navigator.msMaxTouchPoints > 0 || navigator.maxTouchPoints > 0;
 
       if (this.options.offset > 1) {
@@ -126,8 +134,9 @@
       value: function cleanup() {
         var _this = this;
 
-        [].forEach.call(this.animated, function (element) {
-          element.classList.remove(_this.options.animatedIn);
+        // prettier-ignore
+        this.animated.forEach(function (element) {
+          return element.classList.remove(_this.options.animatedIn);
         });
       }
     }, {
@@ -141,7 +150,7 @@
       value: function animate() {
         var app = this;
         var opts = app.options;
-        [].forEach.call(this.animated, function (element, i) {
+        this.animated.forEach(function (element, i) {
           var animationName = element.getAttribute(opts.animationAttr) || '';
 
           if (opts.touchDisabled && app.isTouchDevice) {
@@ -150,7 +159,8 @@
             var shouldAnimate = app.winO + app.winH * opts.offset > app.offsets[i];
 
             if (opts.reverse) {
-              element.classList.toggle(opts.animatedIn, shouldAnimate);
+              element.classList.toggle(opts.animatedIn, shouldAnimate); // prettier-ignore
+
               animationName && element.classList.toggle(animationName, shouldAnimate);
             } else {
               if (shouldAnimate) {
@@ -165,8 +175,10 @@
       key: "updateOffsets",
       value: function updateOffsets() {
         var app = this;
-        app.offsets = [].map.call(app.animated, function (element) {
-          var elementOffset = element.getBoundingClientRect().top + app.win.pageYOffset;
+        app.offsets = this.animated.map(function (element) {
+          // prettier-ignore
+          var elementOffset = element.getBoundingClientRect().top + app.win.pageYOffset; // prettier-ignore
+
           var offsetDelay = parseFloat(element.getAttribute(app.options.offsetAttr)) || 0;
           return elementOffset + offsetDelay;
         });
