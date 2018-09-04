@@ -93,6 +93,14 @@ If you wish to use the defaults, make sure to include the predefined CSS file.
 
 or just use it as a good old `<link>` tag.
 
+### Usage note:
+
+If you are using the `<script>` method when including AnimateMe, then you must initialize it with 
+
+```javascript
+new animateMe.default(options);
+```
+
 ## Options
 
 1.  Set your own classname for the animated element when in viewport:
