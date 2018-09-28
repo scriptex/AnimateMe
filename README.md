@@ -7,8 +7,6 @@
 [![npm](https://img.shields.io/npm/v/animateme.svg)](https://www.npmjs.com/package/animateme)
 [![Analytics](https://ga-beacon.appspot.com/UA-83446952-1/github.com/scriptex/AnimateMe/README.md)](https://github.com/scriptex/AnimateMe/)
 [![Greenkeeper badge](https://badges.greenkeeper.io/scriptex/AnimateMe.svg)](https://greenkeeper.io/)
-[![devDependencies Status](https://david-dm.org/scriptex/AnimateMe/dev-status.svg)](https://david-dm.org/scriptex/AnimateMe?type=dev)
-[![dependencies Status](https://david-dm.org/scriptex/AnimateMe/status.svg)](https://david-dm.org/scriptex/AnimateMe)
 
 # Animate Me
 
