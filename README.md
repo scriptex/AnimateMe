@@ -206,6 +206,20 @@ window.dispatchEvent(enable);
 
 **Something like: `document.createEvent('CustomEvent')`.**
 
+## Bonus
+
+If you chose to use the predefined classnames `animate-me` and `animate-me--in` then you can take advantage of the built-in animations.
+Just include the css file (`/dist/animate.me.css`) in your project and then add additional classname to your animated elements.
+
+There are several predefined animations and their classnames are:
+
+- `animate-me--fadeIn`
+- `animate-me--slideUp`
+- `animate-me--slideDown`
+- `animate-me--slideLeft`
+- `animate-me--slideRight`
+- `animate-me--pop`
+
 ## Demo
 
 There is a simple demo illustrating how the AnimateMe library works.
