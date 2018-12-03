@@ -1,8 +1,4 @@
 .animate-me {
-	opacity: 0;
-	visibility: hidden;
-	-webkit-transform: translateY(10vh);
-	transform: translateY(10vh);
 	transition-property: opacity, visibility, -webkit-transform;
 	transition-property: opacity, visibility, transform;
 	transition-property: opacity, visibility, transform, -webkit-transform;
@@ -10,9 +6,43 @@
 	transition-timing-function: ease-in-out;
 }
 
+.animate-me,
+.animate-me--fadeIn {
+	opacity: 0;
+	visibility: hidden;
+}
+
+.animate-me--slideUp {
+	-webkit-transform: translateY(10vh);
+	transform: translateY(10vh);
+}
+
+
+.animate-me--slideDown {
+	-webkit-transform: translateY(-10vh);
+	transform: translateY(-10vh);
+}
+
+
+.animate-me--slideLeft {
+	-webkit-transform: translateX(-10vh);
+	transform: translateX(-10vh);
+}
+
+
+.animate-me--slideRight {
+	-webkit-transform: translateX(10vh);
+	transform: translateX(10vh);
+}
+
+.animate-me--pop {
+	-webkit-transform: scale(0);
+	transform: scale(0);
+}
+
 .animate-me--in {
 	opacity: 1;
 	visibility: visible;
-	-webkit-transform: translateY(0vh);
-	transform: translateY(0vh);
+	-webkit-transform: translate(0, 0) scale(1);
+	transform: translate(0, 0) scale(1);
 }
