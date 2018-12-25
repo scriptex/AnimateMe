@@ -6,7 +6,6 @@
 [![npm](https://img.shields.io/npm/dt/animateme.svg)](https://www.npmjs.com/package/animateme)
 [![npm](https://img.shields.io/npm/v/animateme.svg)](https://www.npmjs.com/package/animateme)
 [![Analytics](https://ga-beacon.appspot.com/UA-83446952-1/github.com/scriptex/AnimateMe/README.md)](https://github.com/scriptex/AnimateMe/)
-[![Greenkeeper badge](https://badges.greenkeeper.io/scriptex/AnimateMe.svg)](https://greenkeeper.io/)
 
 # Animate Me
 
