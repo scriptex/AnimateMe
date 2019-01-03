@@ -1,46 +1,46 @@
 {
-  "name": "animateme",
-  "version": "0.7.0",
-  "description": "Animate DOM elements when they enter the viewport",
-  "main": "dist/animate.me.js",
-  "style": "dist/animate.me.css",
-  "scripts": {
-    "dist": "babel src/animate.me.js --out-file dist/animate.me.js",
-    "minify": "babel src/animate.me.js --out-file dist/animate.me.min.js --presets minify,@babel/env",
-    "build": "npm run dist && npm run minify"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/scriptex/AnimateMe.git"
-  },
-  "keywords": [
-    "JS Animation",
-    "Scroll Animation",
-    "CSS Animation",
-    "Custom Animation",
-    "Animations"
-  ],
-  "author": "Atanas Atanasov <scriptex.bg@gmail.com> (https://atanas.info)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/scriptex/AnimateMe/issues"
-  },
-  "homepage": "https://github.com/scriptex/AnimateMe#readme",
-  "devDependencies": {
-    "@babel/cli": "7.2.3",
-    "@babel/core": "7.2.2",
-    "@babel/plugin-proposal-class-properties": "7.2.3",
-    "@babel/plugin-proposal-decorators": "7.2.3",
-    "@babel/plugin-proposal-export-namespace-from": "7.2.0",
-    "@babel/plugin-proposal-function-sent": "7.2.0",
-    "@babel/plugin-proposal-json-strings": "7.2.0",
-    "@babel/plugin-proposal-numeric-separator": "7.2.0",
-    "@babel/plugin-proposal-throw-expressions": "7.2.0",
-    "@babel/plugin-syntax-dynamic-import": "7.2.0",
-    "@babel/plugin-syntax-import-meta": "7.2.0",
-    "@babel/plugin-transform-modules-umd": "7.2.0",
-    "@babel/preset-env": "7.2.3",
-    "babel-loader": "8.0.4",
-    "babel-minify": "0.5.0"
-  }
+	"name": "animateme",
+	"version": "1.0.0",
+	"description": "Animate DOM elements when they enter the viewport",
+	"main": "dist/animate.me.js",
+	"style": "dist/animate.me.css",
+	"scripts": {
+		"dist": "babel src/animate.me.js --out-file dist/animate.me.js",
+		"minify": "babel src/animate.me.js --out-file dist/animate.me.min.js --presets minify,@babel/env",
+		"build": "npm run dist && npm run minify"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/scriptex/AnimateMe.git"
+	},
+	"keywords": [
+		"JS Animation",
+		"Scroll Animation",
+		"CSS Animation",
+		"Custom Animation",
+		"Animations"
+	],
+	"author": "Atanas Atanasov <scriptex.bg@gmail.com> (https://atanas.info)",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/scriptex/AnimateMe/issues"
+	},
+	"homepage": "https://github.com/scriptex/AnimateMe#readme",
+	"devDependencies": {
+		"@babel/cli": "7.2.3",
+		"@babel/core": "7.2.2",
+		"@babel/plugin-proposal-class-properties": "7.2.3",
+		"@babel/plugin-proposal-decorators": "7.2.3",
+		"@babel/plugin-proposal-export-namespace-from": "7.2.0",
+		"@babel/plugin-proposal-function-sent": "7.2.0",
+		"@babel/plugin-proposal-json-strings": "7.2.0",
+		"@babel/plugin-proposal-numeric-separator": "7.2.0",
+		"@babel/plugin-proposal-throw-expressions": "7.2.0",
+		"@babel/plugin-syntax-dynamic-import": "7.2.0",
+		"@babel/plugin-syntax-import-meta": "7.2.0",
+		"@babel/plugin-transform-modules-umd": "7.2.0",
+		"@babel/preset-env": "7.2.3",
+		"babel-loader": "8.0.4",
+		"babel-minify": "0.5.0"
+	}
 }
