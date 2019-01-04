@@ -48,7 +48,7 @@ or
 Include it from Unpkg CDN
 
 ```html
-<script src="//unpkg.com/animateme/dist/animate.me.min.js"></script>
+<script src="//unpkg.com/animateme"></script>
 ```
 
 ## Usage
