@@ -4,10 +4,12 @@
 	"description": "Animate DOM elements when they enter the viewport",
 	"main": "dist/animate.me.js",
 	"style": "dist/animate.me.css",
+	"types": "ts/animate.me.d.ts",
 	"scripts": {
 		"dist": "babel src/animate.me.js --out-file dist/animate.me.js",
 		"minify": "babel src/animate.me.js --out-file dist/animate.me.min.js --presets minify,@babel/env",
-		"build": "npm run dist && npm run minify"
+		"build": "npm run dist && npm run minify",
+		"typings": "tsc ts/animate.me.ts -d && rm ts/animate.me.js"
 	},
 	"repository": {
 		"type": "git",
@@ -41,6 +43,7 @@
 		"@babel/plugin-transform-modules-umd": "7.2.0",
 		"@babel/preset-env": "7.4.4",
 		"babel-loader": "8.0.5",
-		"babel-minify": "0.5.0"
+		"babel-minify": "0.5.0",
+		"typescript": "^3.4.5"
 	}
 }

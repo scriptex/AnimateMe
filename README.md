@@ -92,7 +92,7 @@ or just use it as a good old `<link>` tag.
 
 ### Usage note:
 
-If you are using the `<script>` method when including AnimateMe, then you must initialize it with 
+If you are using the `<script>` method when including AnimateMe, then you must initialize it with
 
 ```javascript
 new animateMe.default(options);
@@ -218,6 +218,22 @@ There are several predefined animations and their classnames are:
 - `animate-me--slideLeft`
 - `animate-me--slideRight`
 - `animate-me--pop`
+
+## TypeScript support
+
+TypeScript is supported out of the box. The types declaration file should be automatically picked up by TypeScript.
+
+The TypeScript declaration file is located in the `/ts` folder.
+
+In this folder you will also find the TypeScript version of the AnimateMe module.
+
+If you want to use it:
+
+```typescript
+import AnimateMe from 'animate-me/ts/animate-me';
+
+// and then use it as shown above
+```
 
 ## Demo
 
