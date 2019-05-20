@@ -90,6 +90,25 @@ If you wish to use the defaults, make sure to include the predefined CSS file.
 
 or just use it as a good old `<link>` tag.
 
+**Note**
+
+If you're not using a module bundler and are importing the JS file using a `<script>` tag, then you should initialize the module like this:
+
+```javascript
+// with default options
+new window.animateMe.default();
+
+// or with custom options
+new window.animateMe.default('.your-element', {
+	offset: 0.8,
+	reverse: false,
+	animatedIn: 'your-custom-class',
+	offsetAttr: 'data-offset-top',
+	animationAttr: 'data-animation-name',
+	touchDisabled: false
+});
+```
+
 ### Usage note:
 
 If you are using the `<script>` method when including AnimateMe, then you must initialize it with 
