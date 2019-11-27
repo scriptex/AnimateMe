@@ -29,6 +29,7 @@ Thumbs.db
 
 # CI
 .travis.yml
+.whitesource
 
 # lock files
 yarn.lock
@@ -37,8 +38,12 @@ yarn.lock
 _config.yml
 _.config.yml
 renovate.json
+tsconfig.json
 webpack.config.js
 
 # Prettier
 .prettierrc
 .prettierignore
+
+# Github
+.github
