@@ -19,28 +19,16 @@ You have the freedom to implement your own animations, use predefined (via anoth
 
 There are no dependencies and the library is ready to be used in any environment.
 
-If you, however, wish to develop the library, extend it, fix it, etc, you need to install its development dependencies.
+If you, however, wish to develop the library, extend it, fix it, etc, you need to fork this repository and install its development dependencies.
 
 ## Install
 
 ```sh
 npm i animateme
-```
 
-or
+# or
 
-```sh
 yarn add animateme
-```
-
-or
-
-Just download this repository and link the files located in dist folder:
-
-```html
-<link rel="stylesheet" href="path-to-animate-me/dist/animate.me.css" type="text/css" />
-
-<script src="path-to-animate-me/dist/animate.me.min.js"></script>
 ```
 
 ## Usage
@@ -120,7 +108,7 @@ Using `AnimateMe` via a good old `<script>` tag is currently not supported. Plea
 
 6.  Optionally, you can use an external library such as [Animate.css](https://daneden.github.io/animate.css/). If you choose to do so, make sure that you add the animation name in the `data-animation` attribute of your DOM element. You can modify this attribute name in the options:
 
-`data-animation="bounce"`
+    `data-animation="bounce"`
 
 ## Supported Browsers
 
