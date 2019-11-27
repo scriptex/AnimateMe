@@ -6,7 +6,7 @@ export interface AnimateMeOptions {
     readonly animationAttr?: string;
     readonly touchDisabled?: boolean;
 }
-export default class AnimateMe {
+export declare class AnimateMe {
     private win;
     private winO;
     private winH;
@@ -29,3 +29,4 @@ export default class AnimateMe {
     animate(): void;
     updateOffsets(): void;
 }
+export default AnimateMe;

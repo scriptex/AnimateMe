@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"alwaysStrict": true,
 		"declaration": true,
-		"module": "commonjs",
+		"module": "umd",
 		"noImplicitAny": false,
 		"noStrictGenericChecks": false,
 		"outDir": "dist",

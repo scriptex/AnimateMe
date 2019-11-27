@@ -7,7 +7,7 @@ export interface AnimateMeOptions {
 	readonly touchDisabled?: boolean;
 }
 
-export default class AnimateMe {
+export class AnimateMe {
 	private win: Window = window;
 	private winO: number = 0;
 	private winH: number = 0;
@@ -156,3 +156,5 @@ export default class AnimateMe {
 		});
 	}
 }
+
+export default AnimateMe;
