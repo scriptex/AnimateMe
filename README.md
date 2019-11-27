@@ -43,14 +43,6 @@ Just download this repository and link the files located in dist folder:
 <script src="path-to-animate-me/dist/animate.me.min.js"></script>
 ```
 
-or
-
-Include it from Unpkg CDN
-
-```html
-<script src="//unpkg.com/animateme"></script>
-```
-
 ## Usage
 
 In your HTML create the elements that you want to be animated.
@@ -61,6 +53,10 @@ Then
 
 ```javascript
 import AnimateMe from 'animateme';
+
+// or
+
+import { AnimateMe } from 'animateme';
 ```
 
 and create a new instance with the default settings
@@ -92,30 +88,9 @@ or just use it as a good old `<link>` tag.
 
 **Note**
 
-If you're not using a module bundler and are importing the JS file using a `<script>` tag, then you should initialize the module like this:
+Using `AnimateMe` via a good old `<script>` tag is currently not supported. Please use a module bundler such as Webpack, Parcel, Rollup or Browserify.
 
-```javascript
-// with default options
-new window.animateMe.default();
-
-// or with custom options
-new window.animateMe.default('.your-element', {
-	offset: 0.8,
-	reverse: false,
-	animatedIn: 'your-custom-class',
-	offsetAttr: 'data-offset-top',
-	animationAttr: 'data-animation-name',
-	touchDisabled: false
-});
-```
-
-### Usage note:
-
-If you are using the `<script>` method when including AnimateMe, then you must initialize it with
-
-```javascript
-new animateMe.default(options);
-```
+---
 
 ## Options
 
