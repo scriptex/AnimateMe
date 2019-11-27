@@ -1,21 +1,20 @@
-interface AnimateMeOptions {
+export interface AnimateMeOptions {
     offset?: number;
-    reverse?: boolean;
-    animatedIn?: string;
-    offsetAttr?: string;
-    animationAttr?: string;
-    touchDisabled?: boolean;
+    readonly reverse?: boolean;
+    readonly animatedIn?: string;
+    readonly offsetAttr?: string;
+    readonly animationAttr?: string;
+    readonly touchDisabled?: boolean;
 }
 export default class AnimateMe {
     private win;
     private winO;
-    private winW;
     private winH;
+    private winW;
     private offsets;
+    private options;
     private animated;
     private isTouchDevice;
-    private options;
-    private defaults;
     constructor(selector?: string, options?: AnimateMeOptions);
     start(): void;
     listen(): void;
@@ -30,4 +29,3 @@ export default class AnimateMe {
     animate(): void;
     updateOffsets(): void;
 }
-export {};
