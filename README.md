@@ -231,25 +231,23 @@ Just include the css file (`/dist/animate.me.css`) in your project and then add 
 
 There are several predefined animations and their classnames are:
 
-- `animate-me--fadeIn`
-- `animate-me--slideUp`
-- `animate-me--slideDown`
-- `animate-me--slideLeft`
-- `animate-me--slideRight`
-- `animate-me--pop`
+-   `animate-me--fadeIn`
+-   `animate-me--slideUp`
+-   `animate-me--slideDown`
+-   `animate-me--slideLeft`
+-   `animate-me--slideRight`
+-   `animate-me--pop`
 
 ## TypeScript support
 
 TypeScript is supported out of the box. The types declaration file should be automatically picked up by TypeScript.
 
-The TypeScript declaration file is located in the `/ts` folder.
+The TypeScript declaration file is located in the `/dist` folder.
 
-In this folder you will also find the TypeScript version of the AnimateMe module.
-
-If you want to use it:
+If you want to use the raw TypeScript version of the module:
 
 ```typescript
-import AnimateMe from 'animate-me/ts/animate-me';
+import AnimateMe from 'animate-me/src/animate-me';
 
 // and then use it as shown above
 ```
