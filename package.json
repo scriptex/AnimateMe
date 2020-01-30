@@ -27,8 +27,8 @@
 	},
 	"homepage": "https://github.com/scriptex/AnimateMe#readme",
 	"devDependencies": {
-		"@babel/cli": "7.8.3",
-		"@babel/core": "7.8.3",
+		"@babel/cli": "7.8.4",
+		"@babel/core": "7.8.4",
 		"@babel/plugin-proposal-class-properties": "7.8.3",
 		"@babel/plugin-proposal-decorators": "7.8.3",
 		"@babel/plugin-proposal-export-namespace-from": "7.8.3",
@@ -39,7 +39,7 @@
 		"@babel/plugin-syntax-dynamic-import": "7.8.3",
 		"@babel/plugin-syntax-import-meta": "7.8.3",
 		"@babel/plugin-transform-modules-umd": "7.8.3",
-		"@babel/preset-env": "7.8.3",
+		"@babel/preset-env": "7.8.4",
 		"babel-loader": "8.0.6",
 		"babel-minify": "0.5.1"
 	}
