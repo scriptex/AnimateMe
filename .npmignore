@@ -16,6 +16,8 @@ node_modules/
 .Trashes
 ehthumbs.db
 Thumbs.db
+.whitesource
+.github
 
 # Babel
 .babelrc
