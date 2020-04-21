@@ -44,73 +44,66 @@ export class AnimateMe {
 		this.getCurrentScroll();
 		this.getWindowDimensions();
 
-		this.scrollListener = this.scrollListener.bind(this);
-		this.resizeListener = this.resizeListener.bind(this);
-
-		this.start = this.start.bind(this);
-		this.cleanup = this.cleanup.bind(this);
-		this.destroy = this.destroy.bind(this);
-
 		this.listen();
 		this.start();
 
 		return this;
 	}
 
-	start(): void {
+	private start = (): void => {
 		this.updateOffsets();
 		this.bind();
-	}
+	};
 
-	listen(): void {
+	private listen = (): void => {
 		this.win.addEventListener('animateme:enable', this.start, false);
 		this.win.addEventListener('animateme:cleanup', this.cleanup, false);
 		this.win.addEventListener('animateme:destroy', this.destroy, false);
-	}
+	};
 
-	getCurrentScroll(): void {
+	private getCurrentScroll = (): void => {
 		this.winO = this.win.pageYOffset;
-	}
+	};
 
-	getWindowDimensions(): void {
+	private getWindowDimensions = (): void => {
 		this.winH = this.win.innerHeight;
 		this.winW = this.win.innerWidth;
-	}
+	};
 
-	scrollListener(): void {
+	private scrollListener = (): void => {
 		this.getCurrentScroll();
 		this.animate();
-	}
+	};
 
-	resizeListener(): void {
+	private resizeListener = (): void => {
 		this.getWindowDimensions();
 		this.updateOffsets();
-	}
+	};
 
-	bind(): void {
+	private bind = (): void => {
 		this.getCurrentScroll();
 		this.updateOffsets();
 		this.animate();
 
 		this.win.addEventListener('scroll', this.scrollListener, false);
 		this.win.addEventListener('resize', this.resizeListener, false);
-	}
+	};
 
-	unbind(): void {
+	private unbind = (): void => {
 		this.win.removeEventListener('scroll', this.scrollListener, false);
 		this.win.removeEventListener('resize', this.resizeListener, false);
-	}
+	};
 
-	cleanup(): void {
+	private cleanup = (): void => {
 		this.animated.forEach((element: Element) => element.classList.remove(this.options.animatedIn!));
-	}
+	};
 
-	destroy(): void {
+	private destroy = (): void => {
 		this.unbind();
 		this.cleanup();
-	}
+	};
 
-	animate(): void {
+	private animate = (): void => {
 		const {
 			winO,
 			winH,
@@ -142,9 +135,9 @@ export class AnimateMe {
 				}
 			}
 		});
-	}
+	};
 
-	updateOffsets(): void {
+	private updateOffsets = (): void => {
 		const { offsetAttr } = this.options;
 		const { pageYOffset } = this.win;
 
@@ -154,7 +147,7 @@ export class AnimateMe {
 
 			return elementOffset + offsetDelay;
 		});
-	}
+	};
 }
 
 export default AnimateMe;
