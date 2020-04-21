@@ -8,7 +8,11 @@
 	"scripts": {
 		"build": "tsc -p .",
 		"minify": "jsmin -o dist/animate.me.min.js dist/animate.me.js",
-		"prod": "yarn build && yarn minify"
+		"prod": "yarn build && yarn minify",
+		"release-minor": "release-it minor -n --npm.skipChecks && yarn changelog-local",
+		"release-patch": "release-it patch -n --npm.skipChecks && yarn changelog-local",
+		"release-major": "release-it major -n --npm.skipChecks && yarn changelog-local",
+		"changelog-local": "npx auto-changelog"
 	},
 	"repository": {
 		"type": "git",
@@ -29,6 +33,7 @@
 	"homepage": "https://github.com/scriptex/AnimateMe#readme",
 	"devDependencies": {
 		"jsmin": "1.0.1",
-		"typescript": "3.7.5"
+		"release-it": "13.5.4",
+		"typescript": "3.8.3"
 	}
 }
