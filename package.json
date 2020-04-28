@@ -46,6 +46,6 @@
 		"@babel/preset-env": "7.9.5",
 		"babel-loader": "8.1.0",
 		"babel-minify": "0.5.1",
-		"release-it": "13.5.5"
+		"release-it": "13.5.6"
 	}
 }
