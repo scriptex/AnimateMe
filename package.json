@@ -34,6 +34,6 @@
 	"devDependencies": {
 		"jsmin": "1.0.1",
 		"release-it": "13.6.4",
-		"typescript": "3.9.5"
+		"typescript": "3.9.6"
 	}
 }
