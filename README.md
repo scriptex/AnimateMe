@@ -19,36 +19,16 @@ You have the freedom to implement your own animations, use predefined (via anoth
 
 There are no dependencies and the library is ready to be used in any environment.
 
-If you, however, wish to develop the library, extend it, fix it, etc, you need to install its development dependencies.
+If you, however, wish to develop the library, extend it, fix it, etc, you need to fork this repository and install its development dependencies.
 
 ## Install
 
 ```sh
 npm i animateme
-```
 
-or
+# or
 
-```sh
 yarn add animateme
-```
-
-or
-
-Just download this repository and link the files located in dist folder:
-
-```html
-<link rel="stylesheet" href="path-to-animate-me/dist/animate.me.css" type="text/css" />
-
-<script src="path-to-animate-me/dist/animate.me.min.js"></script>
-```
-
-or
-
-Include it from Unpkg CDN
-
-```html
-<script src="//unpkg.com/animateme"></script>
 ```
 
 ## Usage
@@ -61,6 +41,10 @@ Then
 
 ```javascript
 import AnimateMe from 'animateme';
+
+// or
+
+import { AnimateMe } from 'animateme';
 ```
 
 and create a new instance with the default settings
@@ -92,30 +76,9 @@ or just use it as a good old `<link>` tag.
 
 **Note**
 
-If you're not using a module bundler and are importing the JS file using a `<script>` tag, then you should initialize the module like this:
+Using `AnimateMe` via a good old `<script>` tag is currently not supported. Please use a module bundler such as Webpack, Parcel, Rollup or Browserify.
 
-```javascript
-// with default options
-new window.animateMe.default();
-
-// or with custom options
-new window.animateMe.default('.your-element', {
-	offset: 0.8,
-	reverse: false,
-	animatedIn: 'your-custom-class',
-	offsetAttr: 'data-offset-top',
-	animationAttr: 'data-animation-name',
-	touchDisabled: false
-});
-```
-
-### Usage note:
-
-If you are using the `<script>` method when including AnimateMe, then you must initialize it with 
-
-```javascript
-new animateMe.default(options);
-```
+---
 
 ## Options
 
@@ -145,7 +108,7 @@ new animateMe.default(options);
 
 6.  Optionally, you can use an external library such as [Animate.css](https://daneden.github.io/animate.css/). If you choose to do so, make sure that you add the animation name in the `data-animation` attribute of your DOM element. You can modify this attribute name in the options:
 
-`data-animation="bounce"`
+    `data-animation="bounce"`
 
 ## Supported Browsers
 
@@ -231,12 +194,26 @@ Just include the css file (`/dist/animate.me.css`) in your project and then add 
 
 There are several predefined animations and their classnames are:
 
-- `animate-me--fadeIn`
-- `animate-me--slideUp`
-- `animate-me--slideDown`
-- `animate-me--slideLeft`
-- `animate-me--slideRight`
-- `animate-me--pop`
+-   `animate-me--fadeIn`
+-   `animate-me--slideUp`
+-   `animate-me--slideDown`
+-   `animate-me--slideLeft`
+-   `animate-me--slideRight`
+-   `animate-me--pop`
+
+## TypeScript support
+
+TypeScript is supported out of the box. The types declaration file should be automatically picked up by TypeScript.
+
+The TypeScript declaration file is located in the `/dist` folder.
+
+If you want to use the raw TypeScript version of the module:
+
+```typescript
+import AnimateMe from 'animate-me/src/animate-me';
+
+// and then use it as shown above
+```
 
 ## Demo
 

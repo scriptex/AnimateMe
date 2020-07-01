@@ -1,13 +1,14 @@
 {
 	"name": "animateme",
-	"version": "1.2.0",
+	"version": "2.0.0",
 	"description": "Animate DOM elements when they enter the viewport",
-	"main": "dist/animate.me.js",
+	"main": "dist/animate.me.min.js",
 	"style": "dist/animate.me.css",
+	"types": "dist/animate.me.d.ts",
 	"scripts": {
-		"dist": "babel src/animate.me.js --out-file dist/animate.me.js",
-		"minify": "babel src/animate.me.js --out-file dist/animate.me.min.js --presets minify,@babel/env",
-		"build": "npm run dist && npm run minify",
+		"build": "tsc -p .",
+		"minify": "jsmin -o dist/animate.me.min.js dist/animate.me.js",
+		"prod": "yarn build && yarn minify",
 		"release-minor": "release-it minor -n --npm.skipChecks && yarn changelog-local",
 		"release-patch": "release-it patch -n --npm.skipChecks && yarn changelog-local",
 		"release-major": "release-it major -n --npm.skipChecks && yarn changelog-local",
@@ -31,21 +32,8 @@
 	},
 	"homepage": "https://github.com/scriptex/AnimateMe#readme",
 	"devDependencies": {
-		"@babel/cli": "7.10.4",
-		"@babel/core": "7.10.4",
-		"@babel/plugin-proposal-class-properties": "7.10.4",
-		"@babel/plugin-proposal-decorators": "7.10.4",
-		"@babel/plugin-proposal-export-namespace-from": "7.10.4",
-		"@babel/plugin-proposal-function-sent": "7.10.4",
-		"@babel/plugin-proposal-json-strings": "7.10.4",
-		"@babel/plugin-proposal-numeric-separator": "7.10.4",
-		"@babel/plugin-proposal-throw-expressions": "7.10.4",
-		"@babel/plugin-syntax-dynamic-import": "7.8.3",
-		"@babel/plugin-syntax-import-meta": "7.10.4",
-		"@babel/plugin-transform-modules-umd": "7.10.4",
-		"@babel/preset-env": "7.10.4",
-		"babel-loader": "8.1.0",
-		"babel-minify": "0.5.1",
-		"release-it": "13.6.4"
+		"jsmin": "1.0.1",
+		"release-it": "13.6.4",
+		"typescript": "3.9.5"
 	}
 }
