@@ -1,4 +1,4 @@
-export interface AnimateMeOptions {
+interface AnimateMeOptions {
     offset?: number;
     readonly reverse?: boolean;
     readonly animatedIn?: string;
@@ -6,7 +6,7 @@ export interface AnimateMeOptions {
     readonly animationAttr?: string;
     readonly touchDisabled?: boolean;
 }
-export declare class AnimateMe {
+declare class AnimateMe {
     private win;
     private winO;
     private winH;
@@ -29,4 +29,3 @@ export declare class AnimateMe {
     private animate;
     private updateOffsets;
 }
-export default AnimateMe;

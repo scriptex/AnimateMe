@@ -16,36 +16,18 @@ node_modules/
 .Trashes
 ehthumbs.db
 Thumbs.db
-.whitesource
+
+# Project specific
 .github
-
-# Babel
-.babelrc
-
-# EditorConfig
+_.config.yml
+_config.yml
 .editorconfig
-
-# Git
-.gitignore
 .gitattributes
-
-# CI
+.gitignore
+.prettierignore
+.prettierrc
 .travis.yml
 .whitesource
-
-# lock files
-yarn.lock
-
-# Config
-_config.yml
-_.config.yml
 renovate.json
 tsconfig.json
-webpack.config.js
-
-# Prettier
-.prettierrc
-.prettierignore
-
-# Github
-.github
+yarn.lock
