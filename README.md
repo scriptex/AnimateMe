@@ -53,7 +53,7 @@ and create a new instance with the default settings
 new AnimateMe();
 ```
 
-or use your own settings
+or use your own options
 
 ```javascript
 new AnimateMe('.your-element', {
@@ -76,7 +76,32 @@ or just use it as a good old `<link>` tag.
 
 **Note**
 
-Using `AnimateMe` via a good old `<script>` tag is currently not supported. Please use a module bundler such as Webpack, Parcel, Rollup or Browserify.
+Using `AnimateMe` via a good old `<script>` tag is currently supported only using helper libraries such as `requirejs`, `systemjs`, etc.
+
+```html
+<!-- Import the Require JS script -->
+<script src="https://unpkg.com/requirejs"></script>
+
+<!-- Then require the AnimateMe script from your local folder and use it -->
+<script>
+	require(['./your/scripts/folder/animate.me.js'], function ({ AnimateMe }) {
+		new AnimateMe();
+
+		// or with custom options
+
+		new AnimateMe('.your-element', {
+			offset: 0.8,
+			reverse: false,
+			animatedIn: 'your-custom-class',
+			offsetAttr: 'data-offset-top',
+			animationAttr: 'data-animation-name',
+			touchDisabled: false
+		});
+	});
+</script>
+```
+
+For the best experience please use a module bundler such as Webpack, Parcel, Rollup or Browserify.
 
 ---
 

@@ -9,9 +9,9 @@
 		"build": "tsc -p .",
 		"minify": "jsmin -o dist/animate.me.min.js dist/animate.me.js",
 		"prod": "yarn build && yarn minify",
-		"release-minor": "release-it minor -n --npm.skipChecks && yarn changelog-local",
-		"release-patch": "release-it patch -n --npm.skipChecks && yarn changelog-local",
-		"release-major": "release-it major -n --npm.skipChecks && yarn changelog-local",
+		"release-minor": "release-it minor -n --npm.skipChecks --no-git.requireUpstream && yarn changelog-local",
+		"release-patch": "release-it patch -n --npm.skipChecks --no-git.requireUpstream && yarn changelog-local",
+		"release-major": "release-it major -n --npm.skipChecks --no-git.requireUpstream && yarn changelog-local",
 		"changelog-local": "npx auto-changelog"
 	},
 	"repository": {
