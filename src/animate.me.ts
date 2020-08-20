@@ -1,4 +1,4 @@
-interface AnimateMeOptions {
+export interface AnimateMeOptions {
 	offset?: number;
 	readonly reverse?: boolean;
 	readonly animatedIn?: string;
@@ -7,7 +7,7 @@ interface AnimateMeOptions {
 	readonly touchDisabled?: boolean;
 }
 
-class AnimateMe {
+export class AnimateMe {
 	private win: Window = window;
 	private winO: number = 0;
 	private winH: number = 0;
@@ -149,3 +149,5 @@ class AnimateMe {
 		});
 	};
 }
+
+export default AnimateMe;
