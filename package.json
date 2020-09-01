@@ -33,7 +33,7 @@
 	"homepage": "https://github.com/scriptex/AnimateMe#readme",
 	"devDependencies": {
 		"jsmin": "1.0.1",
-		"release-it": "13.6.8",
-		"typescript": "3.9.7"
+		"release-it": "13.7.0",
+		"typescript": "4.0.2"
 	}
 }
