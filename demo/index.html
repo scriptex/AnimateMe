@@ -5,7 +5,7 @@
 
 		<title>Animate Me Demo</title>
 
-		<link rel="stylesheet" href="../dist/animate.me.css" />
+		<link rel="stylesheet" href="./animate.me.css" />
 
 		<style type="text/css" media="screen">
 			html,
@@ -25,24 +25,50 @@
 				justify-content: center;
 				height: 75vh;
 			}
+
+			footer {
+				text-align: center;
+				padding: 2rem 0;
+			}
 		</style>
 	</head>
 	<body>
-		<div class="animate-me" style="background-color: red;">1st section</div>
+		<main>
+			<div class="animate-me" style="background-color: red">1st section</div>
 
-		<div class="animate-me" style="background-color: blue;">2nd section</div>
+			<div class="animate-me" style="background-color: blue">2nd section</div>
 
-		<div class="animate-me" style="background-color: green;">3rd section</div>
+			<div class="animate-me" style="background-color: green">3rd section</div>
 
-		<div class="animate-me" style="background-color: yellow;">4th section</div>
+			<div class="animate-me" style="background-color: yellow">4th section</div>
 
-		<div class="animate-me" style="background-color: lavender;">5th section</div>
+			<div class="animate-me" style="background-color: lavender">5th section</div>
+		</main>
+
+		<footer>
+			<button>Update</button>
+		</footer>
 
 		<script src="https://unpkg.com/requirejs"></script>
 
 		<script>
-			require(['../dist/animate.me.js'], function ({ AnimateMe }) {
-				new AnimateMe();
+			require(['./animate.me.js'], function ({ AnimateMe }) {
+				var instance = new AnimateMe();
+
+				document.querySelector('button').addEventListener('click', event => {
+					event.preventDefault();
+
+					fetch('.')
+						.then(r => r.text())
+						.then(text => {
+							var html = new DOMParser().parseFromString(text, 'text/html');
+							var sections = html.querySelector('main').innerHTML;
+
+							document.querySelector('main').innerHTML += sections;
+
+							instance.updateInstance();
+						});
+				});
 			});
 		</script>
 	</body>

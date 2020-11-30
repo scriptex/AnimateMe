@@ -1,32 +1,34 @@
 export interface AnimateMeOptions {
-    offset?: number;
-    readonly reverse?: boolean;
-    readonly animatedIn?: string;
-    readonly offsetAttr?: string;
-    readonly animationAttr?: string;
-    readonly touchDisabled?: boolean;
+    readonly offset: number;
+    readonly reverse: boolean;
+    readonly animatedIn: string;
+    readonly offsetAttr: string;
+    readonly animationAttr: string;
+    readonly touchDisabled: boolean;
 }
 export declare class AnimateMe {
+    options: AnimateMeOptions;
+    animated: HTMLElement[];
+    selector: string;
     private win;
     private winO;
     private winH;
-    private winW;
     private offsets;
-    private options;
-    private animated;
     private isTouchDevice;
-    constructor(selector?: string, options?: AnimateMeOptions);
+    constructor(selector?: string, options?: Partial<AnimateMeOptions>);
+    setCurrentScroll: () => void;
+    setWindowDimensions: () => void;
+    bind: () => void;
+    unbind: () => void;
+    cleanup: () => void;
+    destroy: () => void;
+    animate: () => void;
+    setElements: () => void;
+    updateOffsets: () => void;
+    updateInstance: (shouldAnimate?: boolean) => void;
     private start;
     private listen;
-    private getCurrentScroll;
-    private getWindowDimensions;
     private scrollListener;
     private resizeListener;
-    private bind;
-    private unbind;
-    private cleanup;
-    private destroy;
-    private animate;
-    private updateOffsets;
 }
 export default AnimateMe;

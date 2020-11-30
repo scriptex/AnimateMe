@@ -212,6 +212,114 @@ window.dispatchEvent(enable);
 
 **Something like: `document.createEvent('CustomEvent')`.**
 
+## API
+
+AnimateMe provides you with access to its API - class methods which allow you to have full control over the instance and its properties.
+
+**You should use this API with caution.**
+
+First, you need to have an initialized instance of the `AnimateMe` class:
+
+```javascript
+const instance = new AnimateMe();
+```
+
+### Then you can modify the instance properties:
+
+```javascript
+/**
+ * Update the options of the AnimateMe instance
+ */
+instance.options = {
+	offset: 0.5,
+	reverse: true,
+	animatedIn: 'animate-me--in',
+	offsetAttr: 'data-offset',
+	animationAttr: 'data-animation',
+	touchDisabled: true
+};
+
+/**
+ * Update the elements which the instance is animating.
+ * Useful after programmatiacally updating the DOM (for example after AJAX call)
+ */
+instance.animated = Array.from(document.querySelectorAll('.your-new-selector'));
+instance.updateInstance();
+
+/**
+ * Update the CSS selector for the animating elements.
+ * You should not need to change this.
+ */
+instance.selector = '.your-new-selector';
+instance.updateInstance();
+```
+
+### You can use the following public instance methods:
+
+```typescript
+/**
+ * Gets the value of the window.pageYOffset property
+ * and assigns it to a private class property used to
+ * calculate offsets and animate DOM elements.
+ */
+setCurrentScroll();
+
+/**
+ * Gets the value of the window.innerHeight property
+ * and assigns it to a private class property used to
+ * calculate offsets and animate DOM elements.
+ */
+getWindowDimensions();
+
+/**
+ * Attaches event listeners to the document.
+ * Useful after the listeners have been removed for some reason.
+ */
+bind();
+
+/**
+ * Removes the event listeners from the document.
+ * Useful if you want to cleanup after removing all animated
+ * DOM elements.
+ */
+unbind();
+
+/**
+ * Removes the `animatedIn` classname from all animated elements.
+ */
+cleanup();
+
+/**
+ * Removes the event listeners from the document.
+ * Removes the `animatedIn` classname from all animated elements.
+ * Shortcut to calling both unbind() and cleanup()
+ */
+destroy();
+
+/**
+ * Triggers the animation for all elements.
+ */
+animate();
+
+/**
+ * Sets the elements which need to be animated.
+ * Useful after DOM updates (like AJAX calls or similar).
+ */
+setElements();
+
+/**
+ * Updates the `offsets` class property which is used
+ * to animate the elements.
+ */
+updateOffsets();
+
+/**
+ * Updates the whole instance.
+ * @param {Boolean} shouldAnimate Flag based on which the `animate()` method is called.
+ */
+updateInstance(shouldAnimate: boolean = false);
+```
+
 ## Bonus
 
 If you chose to use the predefined classnames `animate-me` and `animate-me--in` then you can take advantage of the built-in animations.

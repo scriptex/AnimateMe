@@ -1,48 +1,44 @@
 export interface AnimateMeOptions {
-	offset?: number;
-	readonly reverse?: boolean;
-	readonly animatedIn?: string;
-	readonly offsetAttr?: string;
-	readonly animationAttr?: string;
-	readonly touchDisabled?: boolean;
+	readonly offset: number;
+	readonly reverse: boolean;
+	readonly animatedIn: string;
+	readonly offsetAttr: string;
+	readonly animationAttr: string;
+	readonly touchDisabled: boolean;
 }
 
 export class AnimateMe {
+	public options: AnimateMeOptions = {
+		offset: 0.5,
+		reverse: true,
+		animatedIn: 'animate-me--in',
+		offsetAttr: 'data-offset',
+		animationAttr: 'data-animation',
+		touchDisabled: true
+	};
+	public animated: HTMLElement[] = [];
+	public selector = '.animate-me';
+
 	private win: Window = window;
 	private winO: number = 0;
 	private winH: number = 0;
-	private winW: number = 0;
 	private offsets: number[] = [];
-	private options: AnimateMeOptions = {};
-	private animated: Element[] = [];
 	private isTouchDevice: boolean = false;
 
-	constructor(selector: string = '.animate-me', options: AnimateMeOptions = {}) {
+	constructor(selector: string = '.animate-me', options: Partial<AnimateMeOptions> = {}) {
+		this.selector = selector;
 		this.options = {
-			offset: 0.5,
-			reverse: true,
-			animatedIn: 'animate-me--in',
-			offsetAttr: 'data-offset',
-			animationAttr: 'data-animation',
-			touchDisabled: true,
+			...this.options,
 			...options
 		};
 
-		this.animated = [...(document.querySelectorAll(selector) as any)];
+		this.setElements();
 
 		// prettier-ignore
 		this.isTouchDevice = 'ontouchstart' in this.win || navigator.msMaxTouchPoints > 0 || navigator.maxTouchPoints > 0;
 
-		if (this.options.offset && this.options.offset > 1) {
-			this.options.offset = 1;
-		}
-
-		if (this.options.offset && this.options.offset < 0) {
-			this.options.offset = 0;
-		}
-
-		this.getCurrentScroll();
-		this.getWindowDimensions();
+		this.setCurrentScroll();
+		this.setWindowDimensions();
 
 		this.listen();
 		this.start();
@@ -50,38 +46,16 @@ export class AnimateMe {
 		return this;
 	}
 
-	private start = (): void => {
-		this.updateOffsets();
-		this.bind();
-	};
-
-	private listen = (): void => {
-		this.win.addEventListener('animateme:enable', this.start, false);
-		this.win.addEventListener('animateme:cleanup', this.cleanup, false);
-		this.win.addEventListener('animateme:destroy', this.destroy, false);
-	};
-
-	private getCurrentScroll = (): void => {
+	public setCurrentScroll = (): void => {
 		this.winO = this.win.pageYOffset;
 	};
 
-	private getWindowDimensions = (): void => {
+	public setWindowDimensions = (): void => {
 		this.winH = this.win.innerHeight;
-		this.winW = this.win.innerWidth;
 	};
 
-	private scrollListener = (): void => {
-		this.getCurrentScroll();
-		this.animate();
-	};
-
-	private resizeListener = (): void => {
-		this.getWindowDimensions();
-		this.updateOffsets();
-	};
-
-	private bind = (): void => {
-		this.getCurrentScroll();
+	public bind = (): void => {
+		this.setCurrentScroll();
 		this.updateOffsets();
 		this.animate();
 
@@ -89,21 +63,21 @@ export class AnimateMe {
 		this.win.addEventListener('resize', this.resizeListener, false);
 	};
 
-	private unbind = (): void => {
+	public unbind = (): void => {
 		this.win.removeEventListener('scroll', this.scrollListener, false);
 		this.win.removeEventListener('resize', this.resizeListener, false);
 	};
 
-	private cleanup = (): void => {
+	public cleanup = (): void => {
 		this.animated.forEach((element: Element) => element.classList.remove(this.options.animatedIn!));
 	};
 
-	private destroy = (): void => {
+	public destroy = (): void => {
 		this.unbind();
 		this.cleanup();
 	};
 
-	private animate = (): void => {
+	public animate = (): void => {
 		const {
 			winO,
 			winH,
@@ -113,13 +87,15 @@ export class AnimateMe {
 			isTouchDevice
 		} = this;
 
+		const offsetOption = offset > 1 ? 1 : offset < 0 ? 0 : offset;
+
 		animated.forEach((element: Element, i: number): void => {
 			const animationName = element.getAttribute(animationAttr!) || '';
 
 			if (touchDisabled && isTouchDevice) {
 				element.classList.add(animatedIn!);
 			} else {
-				const shouldAnimate = winO + winH * offset! > offsets[i];
+				const shouldAnimate = winO + winH * offsetOption > offsets[i];
 
 				if (reverse) {
 					element.classList.toggle(animatedIn!, shouldAnimate);
@@ -137,7 +113,11 @@ export class AnimateMe {
 		});
 	};
 
-	private updateOffsets = (): void => {
+	public setElements = (): void => {
+		this.animated = Array.from(document.querySelectorAll(this.selector));
+	};
+
+	public updateOffsets = (): void => {
 		const { offsetAttr } = this.options;
 		const { pageYOffset } = this.win;
 
@@ -147,6 +127,38 @@ export class AnimateMe {
 
 			return elementOffset + offsetDelay;
 		});
+	};
+
+	public updateInstance = (shouldAnimate = false): void => {
+		this.setElements();
+		this.setWindowDimensions();
+		this.setCurrentScroll();
+		this.updateOffsets();
+
+		if (shouldAnimate) {
+			this.animate();
+		}
+	};
+
+	private start = (): void => {
+		this.updateOffsets();
+		this.bind();
+	};
+
+	private listen = (): void => {
+		this.win.addEventListener('animateme:enable', this.start, false);
+		this.win.addEventListener('animateme:cleanup', this.cleanup, false);
+		this.win.addEventListener('animateme:destroy', this.destroy, false);
+	};
+
+	private scrollListener = (): void => {
+		this.setCurrentScroll();
+		this.animate();
+	};
+
+	private resizeListener = (): void => {
+		this.setWindowDimensions();
+		this.updateOffsets();
 	};
 }
 

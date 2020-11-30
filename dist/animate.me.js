@@ -9,13 +9,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 (function (factory) {
     if (typeof module === "object" && typeof module.exports === "object") {
         var v = factory(require, exports);
@@ -33,40 +26,29 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
             var _this = this;
             if (selector === void 0) { selector = '.animate-me'; }
             if (options === void 0) { options = {}; }
+            this.options = {
+                offset: 0.5,
+                reverse: true,
+                animatedIn: 'animate-me--in',
+                offsetAttr: 'data-offset',
+                animationAttr: 'data-animation',
+                touchDisabled: true
+            };
+            this.animated = [];
+            this.selector = '.animate-me';
             this.win = window;
             this.winO = 0;
             this.winH = 0;
-            this.winW = 0;
             this.offsets = [];
-            this.options = {};
-            this.animated = [];
             this.isTouchDevice = false;
-            this.start = function () {
-                _this.updateOffsets();
-                _this.bind();
-            };
-            this.listen = function () {
-                _this.win.addEventListener('animateme:enable', _this.start, false);
-                _this.win.addEventListener('animateme:cleanup', _this.cleanup, false);
-                _this.win.addEventListener('animateme:destroy', _this.destroy, false);
-            };
-            this.getCurrentScroll = function () {
+            this.setCurrentScroll = function () {
                 _this.winO = _this.win.pageYOffset;
             };
-            this.getWindowDimensions = function () {
+            this.setWindowDimensions = function () {
                 _this.winH = _this.win.innerHeight;
-                _this.winW = _this.win.innerWidth;
-            };
-            this.scrollListener = function () {
-                _this.getCurrentScroll();
-                _this.animate();
-            };
-            this.resizeListener = function () {
-                _this.getWindowDimensions();
-                _this.updateOffsets();
             };
             this.bind = function () {
-                _this.getCurrentScroll();
+                _this.setCurrentScroll();
                 _this.updateOffsets();
                 _this.animate();
                 _this.win.addEventListener('scroll', _this.scrollListener, false);
@@ -85,13 +67,14 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
             };
             this.animate = function () {
                 var _a = _this, winO = _a.winO, winH = _a.winH, offsets = _a.offsets, _b = _a.options, offset = _b.offset, reverse = _b.reverse, animatedIn = _b.animatedIn, touchDisabled = _b.touchDisabled, animationAttr = _b.animationAttr, animated = _a.animated, isTouchDevice = _a.isTouchDevice;
+                var offsetOption = offset > 1 ? 1 : offset < 0 ? 0 : offset;
                 animated.forEach(function (element, i) {
                     var animationName = element.getAttribute(animationAttr) || '';
                     if (touchDisabled && isTouchDevice) {
                         element.classList.add(animatedIn);
                     }
                     else {
-                        var shouldAnimate = winO + winH * offset > offsets[i];
+                        var shouldAnimate = winO + winH * offsetOption > offsets[i];
                         if (reverse) {
                             element.classList.toggle(animatedIn, shouldAnimate);
                             // prettier-ignore
@@ -106,6 +89,9 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
                     }
                 });
             };
+            this.setElements = function () {
+                _this.animated = Array.from(document.querySelectorAll(_this.selector));
+            };
             this.updateOffsets = function () {
                 var offsetAttr = _this.options.offsetAttr;
                 var pageYOffset = _this.win.pageYOffset;
@@ -115,18 +101,40 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
                     return elementOffset + offsetDelay;
                 });
             };
-            this.options = __assign({ offset: 0.5, reverse: true, animatedIn: 'animate-me--in', offsetAttr: 'data-offset', animationAttr: 'data-animation', touchDisabled: true }, options);
-            this.animated = __spreadArrays(document.querySelectorAll(selector));
+            this.updateInstance = function (shouldAnimate) {
+                if (shouldAnimate === void 0) { shouldAnimate = false; }
+                _this.setElements();
+                _this.setWindowDimensions();
+                _this.setCurrentScroll();
+                _this.updateOffsets();
+                if (shouldAnimate) {
+                    _this.animate();
+                }
+            };
+            this.start = function () {
+                _this.updateOffsets();
+                _this.bind();
+            };
+            this.listen = function () {
+                _this.win.addEventListener('animateme:enable', _this.start, false);
+                _this.win.addEventListener('animateme:cleanup', _this.cleanup, false);
+                _this.win.addEventListener('animateme:destroy', _this.destroy, false);
+            };
+            this.scrollListener = function () {
+                _this.setCurrentScroll();
+                _this.animate();
+            };
+            this.resizeListener = function () {
+                _this.setWindowDimensions();
+                _this.updateOffsets();
+            };
+            this.selector = selector;
+            this.options = __assign(__assign({}, this.options), options);
+            this.setElements();
             // prettier-ignore
             this.isTouchDevice = 'ontouchstart' in this.win || navigator.msMaxTouchPoints > 0 || navigator.maxTouchPoints > 0;
-            if (this.options.offset && this.options.offset > 1) {
-                this.options.offset = 1;
-            }
-            if (this.options.offset && this.options.offset < 0) {
-                this.options.offset = 0;
-            }
-            this.getCurrentScroll();
-            this.getWindowDimensions();
+            this.setCurrentScroll();
+            this.setWindowDimensions();
             this.listen();
             this.start();
             return this;

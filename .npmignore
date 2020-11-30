@@ -19,15 +19,18 @@ Thumbs.db
 
 # Project specific
 .github
+.vercel
 _.config.yml
 _config.yml
 .editorconfig
 .gitattributes
 .gitignore
+.nowignore
 .prettierignore
 .prettierrc
 .travis.yml
 .whitesource
+now.json
 renovate.json
 tsconfig.json
 yarn.lock
