@@ -34,8 +34,7 @@ export class AnimateMe {
 
 		this.setElements();
 
-		// prettier-ignore
-		this.isTouchDevice = 'ontouchstart' in this.win || navigator.msMaxTouchPoints > 0 || navigator.maxTouchPoints > 0;
+		this.isTouchDevice = 'ontouchstart' in this.win || navigator.maxTouchPoints > 0;
 
 		this.setCurrentScroll();
 		this.setWindowDimensions();
