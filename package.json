@@ -1,6 +1,6 @@
 {
 	"name": "animateme",
-	"version": "2.2.0",
+	"version": "2.3.0",
 	"description": "Animate DOM elements when they enter the viewport",
 	"main": "dist/animate.me.min.js",
 	"style": "dist/animate.me.css",
@@ -38,6 +38,6 @@
 	"devDependencies": {
 		"jsmin": "1.0.1",
 		"release-it": "14.11.5",
-		"typescript": "4.3.5"
+		"typescript": "4.4.2"
 	}
 }
