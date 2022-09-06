@@ -6,17 +6,18 @@
 	"style": "dist/animate.me.css",
 	"types": "dist/animate.me.d.ts",
 	"scripts": {
-		"build": "tsc -p .",
+		"build": "tsc --skipLibCheck",
 		"minify": "jsmin -o dist/animate.me.min.js dist/animate.me.js",
-		"prod": "yarn build && yarn minify",
+		"prod": "yarn build && yarn minify && yarn copy",
 		"release-minor": "release-it minor -n --npm.skipChecks --no-git.requireUpstream && yarn changelog-local",
 		"release-patch": "release-it patch -n --npm.skipChecks --no-git.requireUpstream && yarn changelog-local",
 		"release-major": "release-it major -n --npm.skipChecks --no-git.requireUpstream && yarn changelog-local",
 		"changelog-local": "npx auto-changelog",
+		"copy": "cp src/animate.me.css dist/animate.me.css",
 		"copy:js": "cp dist/animate.me.js demo/animate.me.js",
 		"copy:css": "cp dist/animate.me.css demo/animate.me.css",
-		"copy": "yarn copy:js && yarn copy:css",
-		"deploy": "yarn build && yarn copy"
+		"copy:demo": "yarn copy:js && yarn copy:css",
+		"deploy": "yarn prod && yarn copy:demo"
 	},
 	"repository": {
 		"type": "git",
