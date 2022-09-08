@@ -1,11 +1,10 @@
-[![GitHub release](https://img.shields.io/github/release/scriptex/AnimateMe.svg)](https://github.com/scriptex/AnimateMe/releases/latest)
-[![GitHub issues](https://img.shields.io/github/issues/scriptex/AnimateMe.svg)](https://github.com/scriptex/AnimateMe/issues)
-[![GitHub last commit](https://img.shields.io/github/last-commit/scriptex/AnimateMe.svg)](https://github.com/scriptex/AnimateMe/commits/master)
-[![Github file size](https://img.shields.io/github/size/scriptex/AnimateMe/dist/animate.me.min.js.svg)](https://github.com/scriptex/AnimateMe)
-[![Build Status](https://travis-ci.com/scriptex/AnimateMe.svg?branch=master)](https://travis-ci.com/scriptex/AnimateMe)
-[![npm](https://img.shields.io/npm/dt/animateme.svg)](https://www.npmjs.com/package/animateme)
-[![npm](https://img.shields.io/npm/v/animateme.svg)](https://www.npmjs.com/package/animateme)
-[![Analytics](https://ga-beacon.appspot.com/UA-83446952-1/github.com/scriptex/AnimateMe/README.md)](https://github.com/scriptex/AnimateMe/)
+[![Travis CI](https://travis-ci.com/scriptex/AnimateMe.svg?branch=master)](https://travis-ci.com/scriptex/AnimateMe)
+[![Github Build](https://github.com/scriptex/AnimateMe/workflows/Build/badge.svg)](https://github.com/scriptex/AnimateMe/actions?query=workflow%3ABuild)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/34d3d75710534dc6a38c3584a1dcd068)](https://www.codacy.com/gh/scriptex/AnimateMe/dashboard?utm_source=github.com&utm_medium=referral&utm_content=scriptex/AnimateMe&utm_campaign=Badge_Grade)
+[![Codebeat Badge](https://codebeat.co/badges/d765a4c8-2c0e-44f2-89c3-fa364fdc14e6)](https://codebeat.co/projects/github-com-scriptex-animateme-master)
+[![CodeFactor Badge](https://www.codefactor.io/repository/github/scriptex/animateme/badge)](https://www.codefactor.io/repository/github/scriptex/animateme)
+[![DeepScan grade](https://deepscan.io/api/teams/3574/projects/5257/branches/40799/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=3574&pid=5257&bid=40799)
+[![Analytics](https://ga-beacon-361907.ew.r.appspot.com/UA-83446952-1/github.com/scriptex/AnimateMe/README.md?pixel)](https://github.com/scriptex/AnimateMe/)
 
 # Animate Me
 
@@ -14,6 +13,21 @@ Animate DOM elements when they enter/leave the browser viewport.
 This library uses a small amount on JavaScript and leaves the actual animations to the CSS.
 
 You have the freedom to implement your own animations, use predefined (via another library) or use the built-in fade in/out animation.
+
+## Visitor stats
+
+![GitHub stars](https://img.shields.io/github/stars/scriptex/AnimateMe?style=social)
+![GitHub forks](https://img.shields.io/github/forks/scriptex/AnimateMe?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/scriptex/AnimateMe?style=social)
+![GitHub followers](https://img.shields.io/github/followers/scriptex?style=social)
+
+## Code stats
+
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/scriptex/AnimateMe)
+![GitHub repo size](https://img.shields.io/github/repo-size/scriptex/AnimateMe?style=plastic)
+![GitHub language count](https://img.shields.io/github/languages/count/scriptex/AnimateMe?style=plastic)
+![GitHub top language](https://img.shields.io/github/languages/top/scriptex/AnimateMe?style=plastic)
+![GitHub last commit](https://img.shields.io/github/last-commit/scriptex/AnimateMe?style=plastic)
 
 ## Dependencies
 
