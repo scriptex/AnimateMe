@@ -36,5 +36,4 @@ tsconfig.json
 tslint.json
 yarn.lock
 
-# Project specific
-dist
+!dist
