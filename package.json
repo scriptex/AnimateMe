@@ -16,7 +16,7 @@
 		"email": "hi@atanas.info"
 	},
 	"license": "MIT",
-	"author": "Atanas Atanasov <scriptex.bg@gmail.com> (https://atanas.info)",
+	"author": "Atanas Atanasov <hi@atanas.info> (https://atanas.info)",
 	"funding": "https://github.com/sponsors/scriptex",
 	"main": "dist/animate.me.min.js",
 	"style": "dist/animate.me.css",
