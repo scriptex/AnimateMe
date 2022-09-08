@@ -2,9 +2,29 @@
 	"name": "animateme",
 	"version": "2.3.0",
 	"description": "Animate DOM elements when they enter the viewport",
+	"keywords": [
+		"Animation",
+		"Animations",
+		"JS Animation",
+		"CSS Animation",
+		"Scroll Animation",
+		"Custom Animation"
+	],
+	"homepage": "https://atanas.info/projects/AnimateMe.html",
+	"bugs": {
+		"url": "https://github.com/scriptex/AnimateMe/issues",
+		"email": "hi@atanas.info"
+	},
+	"license": "MIT",
+	"author": "Atanas Atanasov <scriptex.bg@gmail.com> (https://atanas.info)",
+	"funding": "https://github.com/sponsors/scriptex",
 	"main": "dist/animate.me.min.js",
 	"style": "dist/animate.me.css",
 	"types": "dist/animate.me.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/scriptex/AnimateMe.git"
+	},
 	"scripts": {
 		"build": "tsc --skipLibCheck",
 		"minify": "jsmin -o dist/animate.me.min.js dist/animate.me.js",
@@ -19,23 +39,7 @@
 		"copy:demo": "yarn copy:js && yarn copy:css",
 		"deploy": "yarn prod && yarn copy:demo"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/scriptex/AnimateMe.git"
-	},
-	"keywords": [
-		"JS Animation",
-		"Scroll Animation",
-		"CSS Animation",
-		"Custom Animation",
-		"Animations"
-	],
-	"author": "Atanas Atanasov <scriptex.bg@gmail.com> (https://atanas.info)",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/scriptex/AnimateMe/issues"
-	},
-	"homepage": "https://github.com/scriptex/AnimateMe#readme",
+	"dependencies": {},
 	"devDependencies": {
 		"jsmin": "1.0.1",
 		"release-it": "15.4.1",
