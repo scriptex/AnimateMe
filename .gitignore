@@ -17,7 +17,6 @@ node_modules/
 ehthumbs.db
 Thumbs.db
 
-# Project specific
-.vercel
-demo/animate.me.css
-demo/animate.me.js
+dist
+demo/*.css
+demo/*.js

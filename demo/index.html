@@ -3,9 +3,14 @@
 	<head>
 		<meta charset="utf-8" />
 
-		<title>Animate Me Demo</title>
+		<title>AnimateMe Demo</title>
 
 		<link rel="stylesheet" href="./animate.me.css" />
+
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css"
+		/>
 
 		<style type="text/css" media="screen">
 			html,
@@ -17,6 +22,10 @@
 				margin: 0;
 			}
 
+			main {
+				counter-reset: section;
+			}
+
 			.animate-me {
 				font-family: sans-serif;
 				font-size: 2vw;
@@ -24,29 +33,70 @@
 				align-items: center;
 				justify-content: center;
 				height: 75vh;
+				counter-increment: section;
+			}
+
+			.animate-me::after {
+				content: counter(section);
 			}
 
 			footer {
 				text-align: center;
 				padding: 2rem 0;
 			}
+
+			footer button {
+				display: inline-block;
+				vertical-align: middle;
+				padding: 0.5rem 1rem;
+				border: 1px solid;
+				margin-bottom: 2rem;
+				background: transparent;
+				border-radius: 0.25rem;
+				box-shadow: none;
+				appearance: none;
+				cursor: pointer;
+				transition: background-color 0.3s ease-in-out;
+			}
+
+			footer button:hover {
+				background: rgba(0, 0, 0, 0.1);
+			}
 		</style>
+
+		<script
+			src="https://unpkg.com/scriptex-socials"
+			async
+			integrity="sha384-FDS8WECJvE4bGb+arLPh3DSv0mrVHD+hJRf+UaM6rVMT+wBleSgUlog90rrtgHH1"
+			crossorigin="anonymous"
+		></script>
 	</head>
 	<body>
+		<a
+			href="https://github.com/scriptex/AnimateMe"
+			title="See code on Github"
+			class="github-fork-ribbon"
+			data-ribbon="See code on Github"
+		>
+			See code on Github
+		</a>
+
 		<main>
-			<div class="animate-me" style="background-color: red">1st section</div>
+			<div class="animate-me" style="background-color: red">Section</div>
 
-			<div class="animate-me" style="background-color: blue">2nd section</div>
+			<div class="animate-me" style="background-color: blue">Section</div>
 
-			<div class="animate-me" style="background-color: green">3rd section</div>
+			<div class="animate-me" style="background-color: green">Section</div>
 
-			<div class="animate-me" style="background-color: yellow">4th section</div>
+			<div class="animate-me" style="background-color: yellow">Section</div>
 
-			<div class="animate-me" style="background-color: lavender">5th section</div>
+			<div class="animate-me" style="background-color: lavender">Section</div>
 		</main>
 
 		<footer>
-			<button>Update</button>
+			<button>Add more sections</button>
+
+			<social-links></social-links>
 		</footer>
 
 		<script src="https://unpkg.com/requirejs"></script>
