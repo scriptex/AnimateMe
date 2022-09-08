@@ -23,7 +23,7 @@
 	"types": "dist/animate.me.d.ts",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/scriptex/AnimateMe.git"
+		"url": "github:scriptex/AnimateMe"
 	},
 	"scripts": {
 		"build": "tsc --skipLibCheck",
