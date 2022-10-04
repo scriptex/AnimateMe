@@ -42,7 +42,7 @@
 	"dependencies": {},
 	"devDependencies": {
 		"jsmin": "1.0.1",
-		"release-it": "15.4.3",
+		"release-it": "15.5.0",
 		"typescript": "4.8.4"
 	}
 }
