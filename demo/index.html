@@ -12,6 +12,8 @@
 			href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css"
 		/>
 
+		<link rel="shortcut icon" type="image/x-icon" href="https://atanas.info/images/favicon/favicon.ico" />
+
 		<style type="text/css" media="screen">
 			html,
 			body {
@@ -26,9 +28,22 @@
 				counter-reset: section;
 			}
 
+			.docs {
+				max-width: 50vw;
+				margin: auto;
+			}
+
+			@media (max-width: 1023px) {
+				.docs {
+					max-width: none;
+					padding: 0 1rem;
+				}
+			}
+
 			.animate-me {
 				font-family: sans-serif;
-				font-size: 2vw;
+				font-size: 20px;
+				font-size: clamp(1rem, 2vw, 2rem);
 				display: flex;
 				align-items: center;
 				justify-content: center;
@@ -36,7 +51,7 @@
 				counter-increment: section;
 			}
 
-			.animate-me::after {
+			.animate-me h2::after {
 				content: counter(section);
 			}
 
@@ -82,15 +97,75 @@
 		</a>
 
 		<main>
-			<div class="animate-me" style="background-color: red">Section</div>
+			<div class="animate-me" style="background-color: red">
+				<div class="docs">
+					<h1>Installation</h1>
 
-			<div class="animate-me" style="background-color: blue">Section</div>
+					<code>npm i animateme</code>
 
-			<div class="animate-me" style="background-color: green">Section</div>
+					<p>or</p>
 
-			<div class="animate-me" style="background-color: yellow">Section</div>
+					<code>yarn add animateme</code>
+				</div>
+			</div>
 
-			<div class="animate-me" style="background-color: lavender">Section</div>
+			<div class="animate-me" style="background-color: blue">
+				<div class="docs">
+					<h1>Usage</h1>
+
+					<p>
+						In your HTML create the elements that you want to be animated. <br />The default class name used
+						for the animations is "animate-me".
+					</p>
+
+					<p>Then</p>
+
+					<code>import AnimateMe from 'animateme';</code>
+				</div>
+			</div>
+
+			<div class="animate-me" style="background-color: green">
+				<div class="docs">
+					<h1>Usage</h1>
+
+					<p>then create a new instance with the default settings</p>
+
+					<code>new AnimateMe();</code>
+				</div>
+			</div>
+
+			<div class="animate-me" style="background-color: yellow">
+				<div class="docs">
+					<h1>Usage</h1>
+
+					<p>or use your own options</p>
+
+					<code>
+						<pre>
+new AnimateMe('.your-element', {
+	offset: 0.8,
+	reverse: false,
+	animatedIn: 'your-custom-class',
+	offsetAttr: 'data-offset-top',
+	animationAttr: 'data-animation-name',
+	touchDisabled: false
+});
+						</pre
+						>
+					</code>
+				</div>
+			</div>
+
+			<div class="animate-me" style="background-color: lavender">
+				<div class="docs">
+					<h1>Further reading</h1>
+
+					<p>
+						for more details on usage, API and more, <br />please visit the
+						<a href="https://github.com/scriptex/AnimateMe">Github page</a>.
+					</p>
+				</div>
+			</div>
 		</main>
 
 		<footer>
