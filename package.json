@@ -43,7 +43,7 @@
 	"devDependencies": {
 		"jsmin": "1.0.1",
 		"release-it": "15.9.3",
-		"typescript": "5.0.2"
+		"typescript": "5.0.3"
 	},
 	"release-it": {
 		"hooks": {
