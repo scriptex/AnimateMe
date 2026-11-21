@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
-"""c211-i121535 debug readback: diagnose why entries:list returned 0 entries for
-all 44 c211-i121377 Vertex customJobs at 08:16-08:20Z, then (if any filter variant
-works) re-read every job with the working variant.
+"""c211-i121677 lean readback for the civil-epigram-370317 Vertex mass-fill.
 
-Read-only: no resource mutation of any kind. Prints C211_I121535_DBG_* lines.
+Fast variant of readback.py: region listing and per-job Logging queries run in
+parallel, each job gets ONE immediate retry when entries:list returns empty
+(fact 121656: first query for a filter is empty, immediate retry has content).
+
+Read-only. Prints C211_I121535_DBG_JOB <json> per job (same shape cards.py parses).
 """
 import json
 import os
+import sys
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 
 AUD = ('//iam.googleapis.com/projects/284735288225/locations/global/'
        'workloadIdentityPools/my-pool/providers/my-provider')
@@ -22,21 +26,10 @@ REGIONS = ['us-central1', 'us-east1', 'us-west1', 'europe-west2', 'europe-west4'
            'asia-northeast1', 'asia-northeast3', 'asia-south1', 'asia-southeast1',
            'asia-east1', 'australia-southeast1', 'northamerica-northeast1',
            'us-east4', 'us-west2']
-PROBE_JOBS = [
-    ('us-central1', '186815074327855104'),      # t4-us-01 (had 13 lines at 08:13Z)
-    ('us-central1', '4663393103934128128'),     # a100-us-01 (had 14 lines)
-    ('asia-southeast1', '4372724483438411776'),  # a100-asia-01 (had 108 lines)
-    ('northamerica-northeast1', '3112079976367652864'),  # p4 (never read before)
-]
-
-
-def cap(s, n=400):
-    s = s if isinstance(s, str) else repr(s)
-    return s[:n] if len(s) > n else s
 
 
 def http(url, method='GET', data=None, headers=None, timeout=60):
-    h = {'User-Agent': 'c211-i121535'}
+    h = {'User-Agent': 'c211-i121677'}
     if headers:
         h.update(headers)
     body = None
@@ -48,7 +41,10 @@ def http(url, method='GET', data=None, headers=None, timeout=60):
         with urllib.request.urlopen(req, timeout=timeout) as r:
             return r.status, r.read().decode('utf-8', 'replace')
     except urllib.error.HTTPError as e:
-        return e.code, e.read().decode('utf-8', 'replace')
+        try:
+            return e.code, e.read().decode('utf-8', 'replace')
+        except Exception:
+            return e.code, ''
     except Exception as e:
         return -1, repr(e)
 
@@ -89,69 +85,13 @@ def main():
     at = jget(b, 'accessToken')
     print('%s_GAT http=%s ok=%s len=%d' % (TAG, c, bool(at), len(at or '')), flush=True)
     if not at:
-        print('%s_NO_TOKEN %s' % (TAG, cap(b, 300)), flush=True)
+        print('%s_NO_TOKEN %s' % (TAG, repr(b)[:300]), flush=True)
         return
     AH = {'Authorization': 'Bearer ' + at}
 
-    def q(body, timeout=90):
-        return http('https://logging.googleapis.com/v2/entries:list', method='POST',
-                    data=body, headers=AH, timeout=timeout)
-
-    def n_entries(txt):
-        try:
-            return len(json.loads(txt).get('entries') or [])
-        except Exception:
-            return -1
-
-    def q_retry(jid, tries=3, gap=3):
-        last = (None, '')
-        for k in range(tries):
-            last = q(variants[0][1](jid))
-            if n_entries(last[1]) > 0:
-                return last + (k,)
-            time.sleep(gap)
-        return last + (tries,)
-
-    variants = [
-        ('A_current', lambda jid: {'resourceNames': ['projects/%s' % PROJ_NUM],
-                                   'filter': 'resource.labels.job_id="%s"' % jid,
-                                   'orderBy': 'timestamp asc', 'pageSize': 400}),
-        ('B_labels', lambda jid: {'resourceNames': ['projects/%s' % PROJ_NUM],
-                                  'filter': 'labels.job_id="%s"' % jid,
-                                  'orderBy': 'timestamp asc', 'pageSize': 400}),
-        ('C_noorder', lambda jid: {'resourceNames': ['projects/%s' % PROJ_NUM],
-                                   'filter': 'resource.labels.job_id="%s"' % jid,
-                                   'pageSize': 50}),
-        ('D_restype', lambda jid: {'resourceNames': ['projects/%s' % PROJ_NUM],
-                                   'filter': 'resource.type="aiplatform.googleapis.com/CustomJob" AND resource.labels.job_id="%s"' % jid,
-                                   'orderBy': 'timestamp desc', 'pageSize': 50}),
-    ]
-    working = None
-    for region, jid in PROBE_JOBS:
-        for name, mk in variants:
-            c, b = q(mk(jid))
-            n = n_entries(b)
-            print('%s_VARIANT %s %s %s http=%s entries=%s raw=%s'
-                  % (TAG, region, jid, name, c, n, cap(b, 220)), flush=True)
-            if n > 0 and working is None:
-                working = (name, mk)
-        c, b = q(variants[0][1](jid))
-        print('%s_RETRYA %s %s http=%s entries=%s' % (TAG, region, jid, c, n_entries(b)), flush=True)
-    c, b = q({'resourceNames': ['projects/%s' % PROJ_NUM], 'pageSize': 3,
-              'orderBy': 'timestamp desc'})
-    print('%s_GLOBAL http=%s entries=%s raw=%s' % (TAG, c, n_entries(b), cap(b, 300)), flush=True)
-    c, b = q({'resourceNames': ['projects/%s' % PROJ_NUM], 'pageSize': 3,
-              'filter': 'resource.type="aiplatform.googleapis.com/CustomJob"',
-              'orderBy': 'timestamp desc'})
-    print('%s_GLOBAL_CJ http=%s entries=%s raw=%s' % (TAG, c, n_entries(b), cap(b, 300)), flush=True)
-
-    print('%s_WORKING %s' % (TAG, working[0] if working else 'NONE'), flush=True)
-    use = working[1] if working else variants[0][1]
-
-    summary = []
-    for region in REGIONS:
+    def list_region(region):
         c, b = http('https://%s-aiplatform.googleapis.com/v1/projects/%s/locations/%s/customJobs?pageSize=100'
-                    % (region, PROJ_NUM, region), headers=AH, timeout=90)
+                    % (region, PROJ_NUM, region), headers=AH, timeout=60)
         jobs = []
         if c == 200:
             try:
@@ -160,37 +100,71 @@ def main():
                 jobs = []
         ours = [j for j in jobs if NONCE in (j.get('displayName') or '')]
         print('%s_LIST %s http=%s total=%d ours=%d' % (TAG, region, c, len(jobs), len(ours)), flush=True)
+        out = []
         for j in ours:
             jn = j.get('name', '')
-            jid = jn.rsplit('/', 1)[-1]
-            row = {'region': region, 'job': jid, 'displayName': j.get('displayName'),
-                   'state': j.get('state')}
-            lc, lb, ntries = q_retry(jid)
-            row['tries'] = ntries
-            lines = []
+            out.append({'region': region, 'job': jn.rsplit('/', 1)[-1],
+                        'displayName': j.get('displayName'), 'state': j.get('state')})
+        return out
+
+    t0 = time.time()
+    jobs = []
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        for res in ex.map(list_region, REGIONS):
+            jobs.extend(res)
+    print('%s_LISTED total_ours=%d t=%.1fs' % (TAG, len(jobs), time.time() - t0), flush=True)
+
+    def read_job(row):
+        jid = row['job']
+
+        def q(page=400):
+            return http('https://logging.googleapis.com/v2/entries:list', method='POST',
+                        data={'resourceNames': ['projects/%s' % PROJ_NUM],
+                              'filter': 'resource.labels.job_id="%s"' % jid,
+                              'orderBy': 'timestamp asc', 'pageSize': page},
+                        headers=AH, timeout=60)
+
+        tries = 0
+        lines = []
+        lc = None
+        for tries in (1, 2):
+            lc, lb = q()
             if lc == 200:
-                for e in (json.loads(lb).get('entries') or []):
-                    t = e.get('textPayload') or ''
-                    if t:
-                        lines.append(t.rstrip())
-            row['log_http'] = lc
-            row['n_lines'] = len(lines)
-            row['device'] = [x for x in lines if '_DEVICE ' in x or '_NO_GPU' in x]
-            row['ready'] = [x for x in lines if '_WR_READY' in x or '_WR_TGZ_BAD' in x or '_WR_DL_FAIL' in x]
-            row['shares'] = [x for x in lines if 'accepted' in x.lower()]
-            row['hb'] = [x for x in lines if '_HB ' in x][-3:]
-            row['fallback'] = [x for x in lines if '_FALLBACK' in x or '_SRB_START' in x or '_PH_START' in x]
-            row['tail'] = lines[-6:]
-            summary.append(row)
-            print('%s_JOB %s' % (TAG, cap(json.dumps(row), 2600)), flush=True)
-    dev = [s for s in summary if s.get('device')]
-    print('%s_TOTAL jobs=%d with_device=%d with_shares=%d'
-          % (TAG, len(summary), len(dev), len([s for s in summary if s.get('shares')])), flush=True)
+                try:
+                    for e in (json.loads(lb).get('entries') or []):
+                        t = e.get('textPayload') or ''
+                        if t:
+                            lines.append(t.rstrip())
+                except Exception:
+                    pass
+            if lines:
+                break
+            time.sleep(0.5)
+        out = dict(row)
+        out['log_http'] = lc
+        out['n_lines'] = len(lines)
+        out['tries'] = tries
+        out['device'] = [x for x in lines if '_DEVICE ' in x or '_NO_GPU' in x]
+        out['ready'] = [x for x in lines if '_WR_READY' in x or '_WR_TGZ_BAD' in x or '_WR_DL_FAIL' in x]
+        out['shares'] = [x for x in lines if 'accepted' in x.lower()]
+        out['hb'] = [x for x in lines if '_HB ' in x][-3:]
+        out['fallback'] = [x for x in lines if '_FALLBACK' in x or '_SRB_START' in x or '_PH_START' in x]
+        out['tail'] = lines[-4:]
+        return out
+
+    rows = []
+    with ThreadPoolExecutor(max_workers=6) as ex:
+        for r in ex.map(read_job, jobs):
+            rows.append(r)
+            print('%s_JOB %s' % (TAG, json.dumps(r, separators=(',', ':'))), flush=True)
+    dev = [r for r in rows if r.get('device')]
+    print('%s_TOTAL jobs=%d with_device=%d with_shares=%d t=%.1fs'
+          % (TAG, len(rows), len(dev), len([r for r in rows if r.get('shares')]), time.time() - t0), flush=True)
 
 
 if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        print('%s_FATAL %s' % (TAG, cap(repr(e), 800)), flush=True)
+        print('%s_FATAL %r' % (TAG, e), flush=True)
         raise
