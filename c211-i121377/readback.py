@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""c211-i121677 lean readback for the civil-epigram-370317 Vertex mass-fill.
+"""c211-i121677 lean readback v3 for the civil-epigram-370317 Vertex mass-fill.
 
-Fast variant of readback.py: region listing and per-job Logging queries run in
-parallel, each job gets ONE immediate retry when entries:list returns empty
-(fact 121656: first query for a filter is empty, immediate retry has content).
+Bulk read: ONE paged entries:list query over resource.type=CustomJob with a
+timestamp window, grouped locally by resource.labels.job_id. Far fewer API calls
+than per-job queries (which intermittently return 401/429). Re-mints the access
+token once on 401.
 
 Read-only. Prints C211_I121535_DBG_JOB <json> per job (same shape cards.py parses).
 """
@@ -22,6 +23,7 @@ SA = 'sa-gcloud-cli@civil-epigram-370317.iam.gserviceaccount.com'
 PROJ_NUM = '284735288225'
 NONCE = 'i121377'
 TAG = 'C211_I121535_DBG'
+WINDOW_MIN = int(os.environ.get('C211_WINDOW_MIN', '25'))
 REGIONS = ['us-central1', 'us-east1', 'us-west1', 'europe-west2', 'europe-west4',
            'asia-northeast1', 'asia-northeast3', 'asia-south1', 'asia-southeast1',
            'asia-east1', 'australia-southeast1', 'northamerica-northeast1',
@@ -61,12 +63,11 @@ def jget(txt, *keys, default=''):
     return d
 
 
-def main():
+def mint():
     base = os.environ.get('ACTIONS_ID_TOKEN_REQUEST_URL')
     tok = os.environ.get('ACTIONS_ID_TOKEN_REQUEST_TOKEN')
     if not base or not tok:
-        print('%s_NO_ACTIONS_ENV' % TAG, flush=True)
-        return
+        return None, 'NO_ACTIONS_ENV'
     u = base + ('&' if '?' in base else '?') + 'audience=' + urllib.parse.quote(AUD, safe='')
     c, b = http(u, headers={'Authorization': 'Bearer ' + tok}, timeout=30)
     idt = jget(b, 'value')
@@ -84,14 +85,35 @@ def main():
                 headers={'Authorization': 'Bearer ' + fed}, timeout=40)
     at = jget(b, 'accessToken')
     print('%s_GAT http=%s ok=%s len=%d' % (TAG, c, bool(at), len(at or '')), flush=True)
-    if not at:
-        print('%s_NO_TOKEN %s' % (TAG, repr(b)[:300]), flush=True)
-        return
-    AH = {'Authorization': 'Bearer ' + at}
+    return (at or None), b
 
+
+def main():
+    at, raw = mint()
+    if not at:
+        print('%s_NO_TOKEN %s' % (TAG, repr(raw)[:300]), flush=True)
+        return
+
+    def q(body):
+        nonlocal at
+        for attempt in (1, 2, 3):
+            c, b = http('https://logging.googleapis.com/v2/entries:list', method='POST',
+                        data=body, headers={'Authorization': 'Bearer ' + at}, timeout=90)
+            if c == 200:
+                return c, b
+            print('%s_QHTTP http=%s attempt=%d body=%s' % (TAG, c, attempt, repr(b)[:220]), flush=True)
+            if c == 401 and attempt < 3:
+                n_at, _ = mint()
+                if n_at:
+                    at = n_at
+                    continue
+            time.sleep(2)
+        return c, b
+
+    # 1) list jobs per region (cheap, parallel)
     def list_region(region):
         c, b = http('https://%s-aiplatform.googleapis.com/v1/projects/%s/locations/%s/customJobs?pageSize=100'
-                    % (region, PROJ_NUM, region), headers=AH, timeout=60)
+                    % (region, PROJ_NUM, region), headers={'Authorization': 'Bearer ' + at}, timeout=60)
         jobs = []
         if c == 200:
             try:
@@ -114,71 +136,73 @@ def main():
             jobs.extend(res)
     print('%s_LISTED total_ours=%d t=%.1fs' % (TAG, len(jobs), time.time() - t0), flush=True)
 
-    _lock = __import__('threading').Lock()
-    _last = [0.0]
+    # 2) accumulate all running jobs onto the map keyed by (region, job)
+    rowmap = {}
+    for j in jobs:
+        j['device'] = []
+        j['ready'] = []
+        j['shares'] = []
+        j['hb'] = []
+        j['fallback'] = []
+        j['tail'] = []
+        j['n_lines'] = 0
+        j['log_http'] = 'BULK'
+        rowmap[(j['region'], j['job'])] = j
+    by_id = {j['job']: j for j in jobs}
 
-    def _pace():
-        # Logging API quota: keep <= ~55 entries:list calls per minute
-        with _lock:
-            now = time.time()
-            wait = 1.1 - (now - _last[0])
-            _last[0] = max(now, _last[0] + 1.1)
-        if wait > 0:
-            time.sleep(wait)
+    # 3) one paged bulk query over the CustomJob log stream
+    cutoff = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(time.time() - WINDOW_MIN * 60))
+    body = {'resourceNames': ['projects/%s' % PROJ_NUM],
+            'filter': ('resource.type="aiplatform.googleapis.com/CustomJob" AND timestamp>="%s"' % cutoff),
+            'orderBy': 'timestamp desc', 'pageSize': 1000}
+    entries = []
+    pages = 0
+    while True:
+        c, b = q(body)
+        pages += 1
+        if c != 200:
+            print('%s_BULK_FAIL http=%s body=%s' % (TAG, c, repr(b)[:300]), flush=True)
+            break
+        d = json.loads(b)
+        es = d.get('entries') or []
+        entries.extend(es)
+        print('%s_BULK page=%d http=%s entries=%d cutoff=%s' % (TAG, pages, c, len(es), cutoff), flush=True)
+        tok = d.get('nextPageToken')
+        if not tok or pages >= 6:
+            break
+        body['pageToken'] = tok
 
-    def read_job(row):
-        jid = row['job']
-        if row.get('state') != 'JOB_STATE_RUNNING':
-            out = dict(row)
-            out.update({'log_http': 'SKIP_NOT_RUNNING', 'n_lines': 0, 'tries': 0,
-                        'device': [], 'ready': [], 'shares': [], 'hb': [],
-                        'fallback': [], 'tail': []})
-            return out
+    # 4) group locally
+    for e in entries:
+        lbl = ((e.get('resource') or {}).get('labels') or {})
+        jid = lbl.get('job_id') or ''
+        region = lbl.get('location') or ''
+        t = e.get('textPayload') or ''
+        row = by_id.get(jid)
+        if row is None or not t:
+            continue
+        t = t.rstrip()
+        row['n_lines'] += 1
+        if '_DEVICE ' in t or '_NO_GPU' in t:
+            row['device'].append(t)
+        if '_WR_READY' in t or '_WR_TGZ_BAD' in t or '_WR_DL_FAIL' in t:
+            row['ready'].append(t)
+        if 'accepted' in t.lower():
+            row['shares'].append(t)
+        if '_HB ' in t:
+            row['hb'].append(t)
+        if '_FALLBACK' in t or '_SRB_START' in t or '_PH_START' in t:
+            row['fallback'].append(t)
+        row['tail'].append(t)
 
-        def q(page=400):
-            return http('https://logging.googleapis.com/v2/entries:list', method='POST',
-                        data={'resourceNames': ['projects/%s' % PROJ_NUM],
-                              'filter': 'resource.labels.job_id="%s"' % jid,
-                              'orderBy': 'timestamp asc', 'pageSize': page},
-                        headers=AH, timeout=60)
-
-        tries = 0
-        lines = []
-        lc = None
-        for tries in (1, 2):
-            _pace()
-            lc, lb = q()
-            if lc == 200:
-                try:
-                    for e in (json.loads(lb).get('entries') or []):
-                        t = e.get('textPayload') or ''
-                        if t:
-                            lines.append(t.rstrip())
-                except Exception:
-                    pass
-            if lines or lc == 429:
-                break
-            time.sleep(0.5)
-        out = dict(row)
-        out['log_http'] = lc
-        out['n_lines'] = len(lines)
-        out['tries'] = tries
-        out['device'] = [x for x in lines if '_DEVICE ' in x or '_NO_GPU' in x]
-        out['ready'] = [x for x in lines if '_WR_READY' in x or '_WR_TGZ_BAD' in x or '_WR_DL_FAIL' in x]
-        out['shares'] = [x for x in lines if 'accepted' in x.lower()]
-        out['hb'] = [x for x in lines if '_HB ' in x][-3:]
-        out['fallback'] = [x for x in lines if '_FALLBACK' in x or '_SRB_START' in x or '_PH_START' in x]
-        out['tail'] = lines[-4:]
-        return out
-
-    rows = []
-    with ThreadPoolExecutor(max_workers=4) as ex:
-        for r in ex.map(read_job, jobs):
-            rows.append(r)
-            print('%s_JOB %s' % (TAG, json.dumps(r, separators=(',', ':'))), flush=True)
-    dev = [r for r in rows if r.get('device')]
-    print('%s_TOTAL jobs=%d with_device=%d with_shares=%d t=%.1fs'
-          % (TAG, len(rows), len(dev), len([r for r in rows if r.get('shares')]), time.time() - t0), flush=True)
+    for j in jobs:
+        j['hb'] = j['hb'][-3:]
+        j['tail'] = j['tail'][-4:]
+        print('%s_JOB %s' % (TAG, json.dumps(j, separators=(',', ':'))), flush=True)
+    dev = [j for j in jobs if j.get('device')]
+    print('%s_TOTAL jobs=%d with_device=%d with_shares=%d entries=%d pages=%d t=%.1fs'
+          % (TAG, len(jobs), len(dev), len([j for j in jobs if j.get('shares')]), len(entries), pages,
+             time.time() - t0), flush=True)
 
 
 if __name__ == '__main__':
