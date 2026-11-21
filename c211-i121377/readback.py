@@ -114,8 +114,26 @@ def main():
             jobs.extend(res)
     print('%s_LISTED total_ours=%d t=%.1fs' % (TAG, len(jobs), time.time() - t0), flush=True)
 
+    _lock = __import__('threading').Lock()
+    _last = [0.0]
+
+    def _pace():
+        # Logging API quota: keep <= ~55 entries:list calls per minute
+        with _lock:
+            now = time.time()
+            wait = 1.1 - (now - _last[0])
+            _last[0] = max(now, _last[0] + 1.1)
+        if wait > 0:
+            time.sleep(wait)
+
     def read_job(row):
         jid = row['job']
+        if row.get('state') != 'JOB_STATE_RUNNING':
+            out = dict(row)
+            out.update({'log_http': 'SKIP_NOT_RUNNING', 'n_lines': 0, 'tries': 0,
+                        'device': [], 'ready': [], 'shares': [], 'hb': [],
+                        'fallback': [], 'tail': []})
+            return out
 
         def q(page=400):
             return http('https://logging.googleapis.com/v2/entries:list', method='POST',
@@ -128,6 +146,7 @@ def main():
         lines = []
         lc = None
         for tries in (1, 2):
+            _pace()
             lc, lb = q()
             if lc == 200:
                 try:
@@ -137,7 +156,7 @@ def main():
                             lines.append(t.rstrip())
                 except Exception:
                     pass
-            if lines:
+            if lines or lc == 429:
                 break
             time.sleep(0.5)
         out = dict(row)
@@ -153,7 +172,7 @@ def main():
         return out
 
     rows = []
-    with ThreadPoolExecutor(max_workers=6) as ex:
+    with ThreadPoolExecutor(max_workers=4) as ex:
         for r in ex.map(read_job, jobs):
             rows.append(r)
             print('%s_JOB %s' % (TAG, json.dumps(r, separators=(',', ':'))), flush=True)
