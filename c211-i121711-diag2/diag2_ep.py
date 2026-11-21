@@ -112,3 +112,11 @@ def main():
                 return
         time.sleep(45)
     print('%s_DONE live=%d' % (TAG, live), flush=True)
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except Exception as e:
+        print('%s_FATAL %s' % (TAG, cap(repr(e), 500)), flush=True)
+        raise
