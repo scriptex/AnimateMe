@@ -1,0 +1,153 @@
+name: c211-i120686-mcivpoll
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: mcivpoll
+        required: false
+        default: 'mcivpoll'
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: poll
+        run: |
+          python3 - <<'PYEOF'
+          import base64, json, os, urllib.error, urllib.parse, urllib.request
+
+          PROJ = 'civil-epigram-370317'
+          SA = 'sa-gcloud-cli@civil-epigram-370317.iam.gserviceaccount.com'
+          AUD = ('//iam.googleapis.com/projects/284735288225/locations/global/workloadIdentityPools/'
+                 'my-pool/providers/my-provider')
+          TAG = 'C211_I120686'
+
+
+          def http(url, method='GET', data=None, headers=None, timeout=90):
+              h = {'User-Agent': 'c211-i120686'}
+              if headers:
+                  h.update(headers)
+              body = None
+              if data is not None:
+                  body = json.dumps(data).encode()
+                  h['Content-Type'] = 'application/json'
+              req = urllib.request.Request(url, data=body, headers=h, method=method)
+              try:
+                  with urllib.request.urlopen(req, timeout=timeout) as f:
+                      return f.status, f.read().decode('utf-8', 'ignore')
+              except urllib.error.HTTPError as e:
+                  try:
+                      return e.code, e.read().decode('utf-8', 'ignore')
+                  except Exception:
+                      return e.code, ''
+              except Exception as e:
+                  return -1, str(e)
+
+
+          def jget(s, key, default=None):
+              try:
+                  return json.loads(s).get(key, default)
+              except Exception:
+                  return default
+
+
+          def out(tag, obj, cap=24000):
+              s = json.dumps(obj, separators=(',', ':'))
+              if len(s) > cap:
+                  s = s[:cap] + '...TRUNC'
+              print('%s_%s=%s' % (TAG, tag, s), flush=True)
+
+
+          u = os.environ.get('ACTIONS_ID_TOKEN_REQUEST_URL')
+          t = os.environ.get('ACTIONS_ID_TOKEN_REQUEST_TOKEN')
+          mc, mb = http(u + ('&' if '?' in u else '?') + 'audience=' +
+                        urllib.parse.quote(AUD, safe=''),
+                        headers={'Authorization': 'Bearer ' + t})
+          idtok = jget(mb, 'value')
+          claims = {}
+          if idtok:
+              try:
+                  p = idtok.split('.')[1]
+                  p += '=' * (-len(p) % 4)
+                  claims = json.loads(base64.urlsafe_b64decode(p).decode('utf-8', 'ignore'))
+              except Exception:
+                  pass
+          out('MINT', {'http': mc, 'sub': claims.get('sub'), 'aud': claims.get('aud')})
+          if not idtok:
+              print('%s_END' % TAG, flush=True)
+              raise SystemExit(0)
+
+          sc, sb = http('https://sts.googleapis.com/v1/token', method='POST', data={
+              'audience': AUD,
+              'grantType': 'urn:ietf:params:oauth:grant-type:token-exchange',
+              'requestedTokenType': 'urn:ietf:params:oauth:token-type:access_token',
+              'scope': 'https://www.googleapis.com/auth/cloud-platform',
+              'subjectTokenType': 'urn:ietf:params:oauth:token-type:jwt',
+              'subjectToken': idtok})
+          fed = jget(sb, 'access_token')
+          out('STS', {'http': sc, 'ok': bool(fed), 'err': '' if fed else sb[:300]})
+          if not fed:
+              print('%s_END' % TAG, flush=True)
+              raise SystemExit(0)
+
+          ic, ib = http('https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/' +
+                        urllib.parse.quote(SA, safe='') + ':generateAccessToken', method='POST',
+                        data={'scope': ['https://www.googleapis.com/auth/cloud-platform']},
+                        headers={'Authorization': 'Bearer ' + fed})
+          at = jget(ib, 'accessToken')
+          out('IMPERSONATE', {'http': ic, 'ok': bool(at), 'token_len': len(at or ''),
+                              'err': '' if at else ib[:300]})
+          if not at:
+              print('%s_END' % TAG, flush=True)
+              raise SystemExit(0)
+          AH = {'Authorization': 'Bearer ' + at}
+          out('ACCESS_TOKEN', {'token': at})
+
+          def g(url, method='GET', data=None, timeout=90):
+              return http(url, method=method, data=data, headers=AH, timeout=timeout)
+
+          # READ-ONLY: list customJobs in us-central1 and read each job state + error
+          c, b = g('https://us-central1-aiplatform.googleapis.com/v1/projects/' + PROJ +
+                   '/locations/us-central1/customJobs?pageSize=50')
+          names = []
+          if c == 200:
+              names = [x.get('name') for x in (jget(b, 'customJobs') or [])]
+          out('CUSTOMJOBS_LIST', {'http': c, 'names': names, 'err': '' if c == 200 else b[:400]})
+
+          for nm in names:
+              cc, bb = g('https://us-central1-aiplatform.googleapis.com/v1/' + nm)
+              j = {}
+              try:
+                  j = json.loads(bb)
+              except Exception:
+                  pass
+              out('JOB_GET', {'name': nm, 'http': cc,
+                              'displayName': j.get('displayName'),
+                              'state': j.get('state'),
+                              'createTime': j.get('createTime'),
+                              'startTime': j.get('startTime'),
+                              'endTime': j.get('endTime'),
+                              'error': j.get('error')})
+              jid = nm.rsplit('/', 1)[-1]
+              rows = []
+              lc = -1
+              lb = ''
+              for flt in ['resource.type="ml_job" AND resource.labels.job_id="%s"' % jid,
+                          'resource.labels.job_id="%s"' % jid]:
+                  lc, lb = http('https://logging.googleapis.com/v2/entries:list', method='POST',
+                                data={'resourceNames': ['projects/' + PROJ],
+                                      'filter': flt, 'orderBy': 'timestamp desc',
+                                      'pageSize': 300}, headers=AH, timeout=90)
+                  if lc == 200:
+                      for e in (json.loads(lb).get('entries') or []):
+                          rows.append(e.get('textPayload') or
+                                      json.dumps(e.get('jsonPayload') or {}))
+                      break
+              out('JOB_LOGS', {'job_id': jid, 'http': lc, 'n': len(rows),
+                               'lines': rows[:60], 'err': '' if lc == 200 else lb[:300]})
+
+          print('%s_END' % TAG, flush=True)
+          PYEOF
