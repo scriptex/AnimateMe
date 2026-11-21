@@ -69,23 +69,43 @@ def mint():
     if not base or not tok:
         return None, 'NO_ACTIONS_ENV'
     u = base + ('&' if '?' in base else '?') + 'audience=' + urllib.parse.quote(AUD, safe='')
-    c, b = http(u, headers={'Authorization': 'Bearer ' + tok}, timeout=30)
-    idt = jget(b, 'value')
-    c, b = http('https://sts.googleapis.com/v1/token', method='POST', data={
-        'audience': AUD,
-        'grantType': 'urn:ietf:params:oauth:grant-type:token-exchange',
-        'requestedTokenType': 'urn:ietf:params:oauth:token-type:access_token',
-        'scope': 'https://www.googleapis.com/auth/cloud-platform',
-        'subjectTokenType': 'urn:ietf:params:oauth:token-type:jwt',
-        'subjectToken': idt}, timeout=40)
-    fed = jget(b, 'access_token')
-    c, b = http('https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/'
-                + urllib.parse.quote(SA, safe='') + ':generateAccessToken', method='POST',
-                data={'scope': ['https://www.googleapis.com/auth/cloud-platform']},
-                headers={'Authorization': 'Bearer ' + fed}, timeout=40)
-    at = jget(b, 'accessToken')
-    print('%s_GAT http=%s ok=%s len=%d' % (TAG, c, bool(at), len(at or '')), flush=True)
-    return (at or None), b
+    last = ''
+    for attempt in (1, 2, 3):
+        c, b = http(u, headers={'Authorization': 'Bearer ' + tok}, timeout=30)
+        idt = jget(b, 'value')
+        print('%s_MINT_OIDC attempt=%d http=%s ok=%s' % (TAG, attempt, c, bool(idt)), flush=True)
+        if not idt:
+            print('%s_MINT_OIDC_BODY %s' % (TAG, repr(b)[:240]), flush=True)
+            last = b
+            time.sleep(3)
+            continue
+        c, b = http('https://sts.googleapis.com/v1/token', method='POST', data={
+            'audience': AUD,
+            'grantType': 'urn:ietf:params:oauth:grant-type:token-exchange',
+            'requestedTokenType': 'urn:ietf:params:oauth:token-type:access_token',
+            'scope': 'https://www.googleapis.com/auth/cloud-platform',
+            'subjectTokenType': 'urn:ietf:params:oauth:token-type:jwt',
+            'subjectToken': idt}, timeout=40)
+        fed = jget(b, 'access_token')
+        print('%s_MINT_STS attempt=%d http=%s ok=%s' % (TAG, attempt, c, bool(fed)), flush=True)
+        if not fed:
+            print('%s_MINT_STS_BODY %s' % (TAG, repr(b)[:240]), flush=True)
+            last = b
+            time.sleep(3)
+            continue
+        c, b = http('https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/'
+                    + urllib.parse.quote(SA, safe='') + ':generateAccessToken', method='POST',
+                    data={'scope': ['https://www.googleapis.com/auth/cloud-platform']},
+                    headers={'Authorization': 'Bearer ' + fed}, timeout=40)
+        at = jget(b, 'accessToken')
+        print('%s_GAT attempt=%d http=%s ok=%s len=%d expire=%s'
+              % (TAG, attempt, c, bool(at), len(at or ''), jget(b, 'expireTime')), flush=True)
+        if at:
+            return at, b
+        print('%s_GAT_BODY %s' % (TAG, repr(b)[:240]), flush=True)
+        last = b
+        time.sleep(3)
+    return None, last
 
 
 def main():
