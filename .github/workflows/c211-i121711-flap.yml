@@ -1,0 +1,16 @@
+name: c211-i121711-flap
+on:
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  flap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - name: flapfill
+        env:
+          FILL_POLL_S: "600"
+        run: python3 c211-i121711-flap/flap_fill.py
