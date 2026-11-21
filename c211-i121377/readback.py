@@ -16,7 +16,9 @@ PROJ_NUM = '284735288225'
 NONCE = 'i121377'
 TAG = 'C211_I121377_RB'
 REGIONS = ['us-central1', 'us-east1', 'us-west1', 'europe-west2', 'europe-west4',
-           'asia-northeast1', 'asia-northeast3', 'asia-south1', 'asia-southeast1']
+           'asia-northeast1', 'asia-northeast3', 'asia-south1', 'asia-southeast1',
+           'asia-east1', 'australia-southeast1', 'northamerica-northeast1',
+           'us-east4', 'us-west2']
 
 
 def cap(s, n=400):
