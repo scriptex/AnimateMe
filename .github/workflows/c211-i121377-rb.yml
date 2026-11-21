@@ -1,0 +1,16 @@
+name: c211-i121377-rb
+on:
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  rb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: rb
+        run: |
+          set -uo pipefail
+          python3 c211-i121377/readback.py
