@@ -1,0 +1,16 @@
+name: c211-i121377-t4fill
+on:
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  t4fill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: t4fill
+        run: |
+          set -uo pipefail
+          python3 c211-i121377/fill_t4.py
