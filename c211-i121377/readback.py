@@ -103,6 +103,15 @@ def main():
         except Exception:
             return -1
 
+    def q_retry(jid, tries=3, gap=3):
+        last = (None, '')
+        for k in range(tries):
+            last = q(variants[0][1](jid))
+            if n_entries(last[1]) > 0:
+                return last + (k,)
+            time.sleep(gap)
+        return last + (tries,)
+
     variants = [
         ('A_current', lambda jid: {'resourceNames': ['projects/%s' % PROJ_NUM],
                                    'filter': 'resource.labels.job_id="%s"' % jid,
@@ -156,7 +165,8 @@ def main():
             jid = jn.rsplit('/', 1)[-1]
             row = {'region': region, 'job': jid, 'displayName': j.get('displayName'),
                    'state': j.get('state')}
-            lc, lb = q(use(jid))
+            lc, lb, ntries = q_retry(jid)
+            row['tries'] = ntries
             lines = []
             if lc == 200:
                 for e in (json.loads(lb).get('entries') or []):
